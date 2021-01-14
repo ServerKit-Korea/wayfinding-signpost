@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /jihun-build
+/wf_build
 /tmp
 *.zip
 

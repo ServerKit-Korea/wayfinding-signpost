@@ -241,12 +241,12 @@ export class AppComponent implements OnInit {
     }
 
     // this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
-    // this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
-    this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.13:3000";
-    this.deviceLog.screenId = (this.deviceLog.screenId !== "") ? this.deviceLog.screenId : "5f2be183e2db595ec0bbf50f";   // 5b6b866c20557e113ce83af4
-    this.deviceLog.matrixId = (this.deviceLog.matrixId !== "") ? this.deviceLog.matrixId : "1465";   // 648
-    this.deviceLog.zoneId = (this.deviceLog.zoneId !== "") ? this.deviceLog.zoneId : "2834";         // 1335
-    this.deviceLog.fair = (this.deviceLog.fair !== "") ? this.deviceLog.fair : "5fc731e2d750911e7032a86a";
+    this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
+    // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.13:3000";
+    this.deviceLog.screenId = (this.deviceLog.screenId !== "") ? this.deviceLog.screenId : "";    // 5b6b866c20557e113ce83af4
+    this.deviceLog.matrixId = (this.deviceLog.matrixId !== "") ? this.deviceLog.matrixId : "";    // 648
+    this.deviceLog.zoneId = (this.deviceLog.zoneId !== "") ? this.deviceLog.zoneId : "";          // 1335
+    this.deviceLog.fair = (this.deviceLog.fair !== "") ? this.deviceLog.fair : "";                // 5b6b866c20557e113ce83af4
     console.log("device Log : ", this.deviceLog);
 
     this.gateway.getAwait(LOCAL_WAS).then(json => {
