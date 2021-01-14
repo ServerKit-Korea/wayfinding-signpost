@@ -1,0 +1,48 @@
+
+  {
+    "layers": [
+      {
+        "logos": [
+          "./assets/default/89.png"
+        ],
+        "imgs": [
+          "WC_B_A",
+          "WC_B",
+          "WC_grau"
+        ],
+        "langDesc": [],
+        "context": "Entertainment Area",
+        "destName": "HALL_8_2",
+        "direction": 16
+      },
+      {
+        "logos": [
+          "./assets/icons/gamescom.png"
+        ],
+        "imgs": [
+          "WC_B_A",
+          "WC_grau"
+        ],
+        "langDesc": [],
+        "context": "Entertainment Area",
+        "destName": "HALL_11-1-WEST",
+        "direction": 16
+      },
+      {
+        "logos": [
+          "./assets/icons/gamescom.png"
+        ],
+        "imgs": [
+          "WC_grau"
+        ],
+        "langDesc": [],
+        "context": "Entertainment Area",
+        "destName": "HALL_11-1-WEST",
+        "direction": 16
+      }
+    ],
+    "title": "AAAAAAAAA",
+    "type": "Section",
+    "color": "red",
+    "arrowMask": 0
+  }

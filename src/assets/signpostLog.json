@@ -1,0 +1,70 @@
+[
+  {
+    "type": "Section-Multiple",
+    "title": "garden bbq A",
+    "color": "#F10909",
+    "arrowMask": "111111011111",
+    "layers": [
+        {
+            "destName": "HALL_7",
+            "context": "garden bbq A",
+            "langDesc": "",
+            "logos": [
+                ""
+            ],
+            "imgs": [
+                "Ladies.Men",
+                "Toilet.for.handicapped.persons",
+                "BIS_grau"
+            ],
+            "direction": 2
+        }
+    ]
+  },
+  
+  {
+    "type": "Section-Multiple",
+    "title": "garden bbq B",
+    "color": "#F10909",
+    "arrowMask": "111111011111",
+    "layers": [
+        {
+            "destName": "HALL_8",
+            "context": "garden bbq B",
+            "langDesc": "",
+            "logos": [
+                ""
+            ],
+            "imgs": [
+                "Ladies.Men",
+                "Toilet.for.handicapped.persons",
+                "BIS_grau"
+            ],
+            "direction": 2
+        }
+    ]
+  },
+  
+  {
+    "type": "Section-Multiple",
+    "title": "garden bbq C",
+    "color": "#F10909",
+    "arrowMask": "111111011111",
+    "layers": [
+        {
+            "destName": "HALL_9",
+            "context": "garden bbq C",
+            "langDesc": "",
+            "logos": [
+                ""
+            ],
+            "imgs": [
+                "Ladies.Men",
+                "Toilet.for.handicapped.persons",
+                "BIS_grau"
+            ],
+            "direction": 2
+        }
+    ]
+  }
+]

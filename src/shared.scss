@@ -1,0 +1,119 @@
+
+// aspect ratio
+[data-aspect-ratio] {
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
+
+    &:before {
+        content: "";
+        display: block;
+    }
+
+    &:after { /* to clear float */
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    > * {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+
+$sqrt_2: 1.41421356237;
+@mixin iconArrow($direction: 'up', $width: 50px, $height: 50px, $thick: 2px, $color: #222, $display: inline-block, $position: relative) {
+    position: $position;
+    display: $display;
+    width: $width;
+    height: $height;
+
+    &:before {
+        content: '';
+        position: absolute;
+        border-top: $thick solid $color;
+        border-left: $thick solid $color;
+
+        @if ($direction == 'up' or $direction == 'down') {
+            $size: round($width/$sqrt_2 - $thick);
+            left: 50%;
+            width: $size;
+            height: $size;
+            
+            @if ($direction == 'up') {
+                top: round($width/2);
+                -webkit-transform: translate(-50%, -56%) rotate(45deg);
+                transform: translate(-50%, -56%) rotate(45deg);
+            } @else if ($direction == 'down') {
+                bottom: round($width/2);
+                -webkit-transform: translate(-50%, 56%) rotate(-135deg);
+                transform: translate(-50%, 56%) rotate(-135deg);
+            }
+        } 
+        @else if($direction == 'left' or $direction == 'right') {
+            $size: round($height/$sqrt_2 - $thick);
+            top: 50%;
+            width: $size;
+            height: $size;
+
+            @if ($direction == 'left') {
+                left: round($height/2);
+                -webkit-transform: translate(-56%, -50%) rotate(-45deg);
+                transform: translate(-56%, -50%) rotate(-45deg);
+            } @else if ($direction == 'right') {
+                right: round($height/2);
+                -webkit-transform: translate(56%, -50%) rotate(135deg);
+                transform: translate(56%, -50%) rotate(135deg);
+            }
+        }
+        
+        @else if($direction == 'left-up') {
+            $size: round($height/$sqrt_2 - $thick);
+            top: 50%;
+            width: $size;
+            height: $size;
+
+            left: round($height/2);
+            -webkit-transform: translate(-56%, -50%) rotate(-45deg);
+            transform: translate(-56%, -50%) rotate(-45deg);
+        }
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        background-color: $color;
+ 
+        @if ($direction == 'up' or $direction == 'down') {
+ 
+            @if ($direction == 'up') {
+                top: round($thick/$sqrt_2);
+            } @else if ($direction == 'down') {
+                bottom: round($thick/$sqrt_2);
+            }
+ 
+            left: 50%;
+            width: $thick;
+            height: $height - round($thick/$sqrt_2);
+            -webkit-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+ 
+        } @else if ($direction == 'left' or $direction == 'right') {
+            top: 50%;
+ 
+            @if ($direction == 'left') {
+                left: round($thick/$sqrt_2);
+            } @else if ($direction == 'right') {
+                right: round($thick/$sqrt_2);
+            }
+ 
+            width: $width - round($thick/$sqrt_2);
+            height: $thick;
+            -webkit-transform: translate(0%, -50%);
+            transform: translate(0%, -50%);
+        }
+    }
+}

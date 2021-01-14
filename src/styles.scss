@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import '../node_modules/bootstrap/dist/css/bootstrap-grid.min.css';
+
+/* Font - Trebuchet Bold */
+$FONT_PATH : './assets/fonts/TrebuchetMS.ttf';
+@font-face {
+    font-family: 'Trebuchet Bold';
+    font-weight: bold;
+    
+    src: url($FONT_PATH),     /* IE9 Compat Modes */
+    // src: url('/assets/fonts/Trebuchet MS.ttf?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    //      url('/assets/fonts/Trebuchet MS.ttf') format('woff2'),       /* Super Modern Browsers */
+    //      url('/assets/fonts/Trebuchet MS.ttf') format('woff'),        /* Pretty Modern Browsers */
+    //      url('/assets/fonts/Trebuchet MS.ttf') format('truetype'),    /* Safari, Android, iOS */
+         local('Trebuchet MS');
+}
+
+@font-face {
+    font-family: 'Trebuchet Normal';
+    font-weight: normal;
+    src: url($FONT_PATH) format('truetype');
+}
+
+* {
+    font-family: 'Trebuchet Normal';
+    font-size: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  display: none; 
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  // background: #f1f1f1; 
+  display: none; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  // background: #888; 
+  display: none; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  // background: #555; 
+  display: none; 
+}
+
+#element::-webkit-scrollbar { 
+  display: none; 
+}

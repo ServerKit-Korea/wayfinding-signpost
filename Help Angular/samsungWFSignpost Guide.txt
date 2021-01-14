@@ -1,0 +1,41 @@
+Signpost 저주받은 Angular
+
+<Angular Start>
+ng serve
+ng serve --port XXXX (기본 포트는 4200입니다.)
+
+
+<Angular Build>
+ng build --prod --aot=false (--가 붙은 옵션은 생략 가능하나 디버그 빌드가 되어 엄청나게 지저분해집니다.)
+
+
+<조립 방법>
+빌드가 되면 samsungWFSignpost 폴더 내에 wf_build 폴더가 생성됩니다. 구조는 아마 아래와 같을 겁니다.
+
+assets(folder)
+inline.XXXXX.bundle.js
+main.XXXXXX.bundle.js
+polyfills.XXXXX.bundle.js
+vendor.XXXXXX.bundle.js
+styles.XXXXX.bundle.js
+TrebuchetMS.XXXXX.ttf
+favicon.ico
+index.html
+3rdpartylicenses.txt
+
+그렇다면 우선 3rdpartylicenses.txt는 삭제하고 폴더를 2개 만들어서 각각 css와 js 이름으로 만들어 줍니다.
+js 폴더에는 js 파일을, css 폴더에는 index.html과 assets 폴더를 제외한 폰트, 이미지, css 파일을 넣습니다.
+
+그리고 index.html을 편집기 모드로 들어가서 link와 script 태그 안의 경로를 다시 작성해 주셔야 합니다.
+
+ex)
+
+ Before : styles.f5d04e1f69424d450b84.bundle.css
+ After : ./css/styles.f5d04e1f69424d450b84.bundle.css
+
+그 다음은 samsungWFSignpost 내에 있는 thumbnail.png를 wf_build내에 복사해 줍니다.
+이 이미지는 samsung CMS에 올라갈 Template과 Scene의 미리보기 이미지가 될 것입니다. 색을 바꾸고 싶다면 동봉된
+포토샵을 뜯어 주세요.
+
+완성되었다면 그 구조는 Help Angular/Complate 내의 이미지처럼 될 것입니다.
+이 상태에서 wf_build를 압축해서 Trello와 같이 하면 됩니다.
