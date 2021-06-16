@@ -1,14 +1,14 @@
-import { Injectable, Inject } from '@angular/core';
-import { Http, Headers, Jsonp, } from '@angular/http';
-import { HttpClient, } from '@angular/common/http';
+import { Injectable, Inject } from "@angular/core";
+import { Http, Headers, Jsonp, } from "@angular/http";
+import { HttpClient, } from "@angular/common/http";
 
 // RxJS & operator
-import { Observable, } from 'rxjs';
-import { map, tap, filter, scan, last, timeout, timeoutWith, catchError } from 'rxjs/operators';
+import { Observable, } from "rxjs";
+import { map, tap, filter, scan, last, timeout, timeoutWith, catchError } from "rxjs/operators";
 
 // socket.io for client
-import * as io from 'socket.io-client';
-import { EventService } from './event.service';
+import * as io from "socket.io-client";
+import { EventService } from "./event.service";
 
 // SSL : https://opentutorials.org/course/228/4894
 @Injectable()
@@ -17,7 +17,7 @@ export class GatewayService {
   private _server_ip: string = "";
   get serverIP(): string { return this._server_ip; }
   set serverIP(ip: string) {
-    if (this._server_ip.substring(0, this._server_ip.indexOf('/') + 1) != "http://") {
+    if (this._server_ip.substring(0, this._server_ip.indexOf("/") + 1) != "http://") {
       this._server_ip = "http://" + this._server_ip;
     }
     this._server_ip = ip;
@@ -35,13 +35,13 @@ export class GatewayService {
   // timeout
   private _timeout: number = 4000;
   public get timeout() { return this._timeout; }
-  public set timeout(timeout: number) { this._timeout = timeout; }
+  public set timeout(t: number) { this._timeout = t; }
 
   constructor(@Inject(Http) private http: Http, @Inject(HttpClient) private httpClient: HttpClient, private jsonp: Jsonp, private event: EventService) {
 
     this._standard_header = new Headers();
-    this._standard_header.append('content-type', 'application/json;charset=UTF-8');
-    this._standard_header.append('Access-Control-Allow-Credentials', 'true');
+    this._standard_header.append("content-type", "application/json;charset=UTF-8");
+    this._standard_header.append("Access-Control-Allow-Credentials", "true");
     this.revertHeaders();
 
   }
@@ -53,7 +53,7 @@ export class GatewayService {
 
   async getAwait(url: string): Promise<any> {
     // let _await_header: Headers = new Headers();
-    // _await_header.append('Content-Type', 'application/json');
+    // _await_header.append("Content-Type", "application/json");
     // const res = await this.http.get(url, { headers: _await_header }).toPromise();
     const res = await this.http.get(url).toPromise();
     return res.json();
