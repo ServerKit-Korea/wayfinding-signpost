@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs/Subject";
 
 @Injectable()
 export class EventService {
@@ -16,7 +16,9 @@ export class EventService {
 
     emitEvent<T>(key: string, E?: T) {
         let emit$: Subject<T> = this.hashMap.get(key);
-        if(emit$ === undefined || emit$ === null) return;
+        if (emit$ === undefined || emit$ === null) {
+            return;
+        }
         emit$.next(E);
     }
 }
