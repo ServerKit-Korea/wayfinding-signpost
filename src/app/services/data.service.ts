@@ -455,9 +455,19 @@ export class DataService {
     // 여기서부터 턴이 갈리는데 하필이면 fair-overview가 이상한 조건 달고 나와서..
     if (fair_overview_special) {
       for (let i = 0; i < repeat; i++) {
+        if (signposts[i] != undefined) {
+          break;
+        }
 
         // 이놈의 경우 가공 데이터이므로 상관 없다.
-        returnSignpost.push(signposts[i]);
+        if (signposts[i].layers[0].destName == undefined || signposts[i].layers[0].destName == "") {
+          repeat++;
+          continue;
+        }
+
+        if (signposts[i]) {
+          returnSignpost.push(signposts[i]);
+        }
       }
       this.signpostIndex += (fair_overview_backupSignpost.length - 1);
       this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex + 1);
@@ -466,10 +476,23 @@ export class DataService {
       for (let i = 0; i < repeat; i++) {
         const nowIndex: number = i + start;
 
+        if (allSignposts[nowIndex] != undefined) {
+          break;
+        }
+
         // 초기 0번 개체만 아니면 추가한다.
         if (initIndex != nowIndex) {
+
+          // 만약 destname이 비어 있다면 생략한다.
+          if (allSignposts[nowIndex].layers[0].destName == undefined || allSignposts[nowIndex].layers[0].destName == "") {
+            repeat++;
+            continue;
+          }
+
           // 여기는 주의해야 하는게 전체 인덱스 범위를 기준으로 잡았으니 당연히 전체 사인포스트를 기준으로 가져와야 한다.
-          returnSignpost.push(allSignposts[nowIndex]);
+          if (allSignposts[nowIndex]) {
+            returnSignpost.push(allSignposts[nowIndex]);
+          }
         }
       }
       this.signpostIndex += (repeat - 1);
