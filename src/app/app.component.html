@@ -17,15 +17,15 @@
           <div *ngIf="signpost.type === 'Fair-Closest'" class="normal" [ngClass]="{'left': (zoneDirection() == 'left'), 'right': (zoneDirection() == 'right')}">
             <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
               <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
-                style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
+                style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallback  Error($event, logoURL)">
             </div>
             <!-- idx * 160 * 1.2 -->
             <div *ngIf="signpost?.layers[0]?.imgs != undefined || signpost?.layers[0]?.imgs?.length > 0">
   
               <div *ngIf="zoneDirection() === 'left'">
                 <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.right.vw]="(idx*10.3125)"
-                    [ngClass]="{'round': (signpost.color == '#383838')}"
-                    [style.background-color]="signpost.color">
+                    [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                    [style.background-color]="data.pictoColor">
                   <div *ngIf="idx <= 2" class="pictogram multiply">
                     <img class="icon" src="{{imagePath(pictogram)}}">
                   </div>
@@ -33,8 +33,8 @@
               </div>
               <div *ngIf="zoneDirection() === 'right'">
                 <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.left.vw]="(idx*10.3125)"
-                    [ngClass]="{'round': (signpost.color == '#383838')}"
-                    [style.background-color]="signpost.color">
+                    [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                    [style.background-color]="data.pictoColor">
                   <div *ngIf="idx <= 2" class="pictogram multiply">
                     <img class="icon" src="{{imagePath(pictogram)}}">
                   </div>
@@ -294,8 +294,8 @@
                 <div *ngIf="signpost.layers[0].imgs != undefined || signpost.layers[0].imgs.length > 0">
                     <div *ngIf="zoneDirection() === 'left'">
                         <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.right.vw]="(idx*10.3125)"
-                            [ngClass]="{'round': (data.pictoColor == '#383838')}"
-                            [style.background-color]="signpost.color">
+                            [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                            [style.background-color]="data.pictoColor">
                             <div *ngIf="idx <= 2" class="pictogram multiply">
                                 <img class="icon" src="{{imagePath(pictogram)}}">
                             </div>
@@ -303,8 +303,8 @@
                     </div>
                     <div *ngIf="zoneDirection() === 'right'">
                         <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.left.vw]="(idx*10.3125)"
-                            [ngClass]="{'round': (data.pictoColor == '#383838')}"
-                            [style.background-color]="signpost.color">
+                            [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                            [style.background-color]="data.pictoColor">
                             <div *ngIf="idx <= 2" class="pictogram multiply">
                                 <img class="icon" src="{{imagePath(pictogram)}}">
                             </div>
@@ -370,8 +370,8 @@
   
                   <div *ngIf="zoneDirection() === 'left'">
                       <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.right.vw]="(idx*10.3125)"
-                          [ngClass]="{'round': (signpost.color == '#383838')}"
-                          [style.background-color]="signpost.color">
+                          [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                          [style.background-color]="data.pictoColor">
                           <div *ngIf="idx <= 2" class="pictogram multiply">
                               <img class="icon" src="{{imagePath(pictogram)}}">
                           </div>
@@ -379,8 +379,8 @@
                   </div>
                   <div *ngIf="zoneDirection() === 'right'">
                       <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.left.vw]="(idx*10.3125)"
-                          [ngClass]="{'round': (signpost.color == '#383838')}"
-                          [style.background-color]="signpost.color">
+                          [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                          [style.background-color]="data.pictoColor">
                           <div *ngIf="idx <= 2" class="pictogram multiply">
                               <img class="icon" src="{{imagePath(pictogram)}}">
                           </div>
@@ -448,8 +448,8 @@
   
                     <div *ngIf="zoneDirection() === 'left'">
                         <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.right.vw]="(idx*10.3125)"
-                            [ngClass]="{'round': (data.pictoColor == '#383838')}"
-                            [style.background-color]="signpost.color">
+                            [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                            [style.background-color]="data.pictoColor">
                             <div *ngIf="idx <= 2" class="pictogram multiply">
                                 <img class="icon" src="{{imagePath(pictogram)}}">
                             </div>
@@ -457,8 +457,8 @@
                     </div>
                     <div *ngIf="zoneDirection() === 'right'">
                         <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.left.vw]="(idx*10.3125)"
-                            [ngClass]="{'round': (data.pictoColor == '#383838')}"
-                            [style.background-color]="signpost.color">
+                            [ngClass]="{'round': (signpost.color == '#ffffff')}"
+                            [style.background-color]="data.pictoColor">
                             <div *ngIf="idx <= 2" class="pictogram multiply">
                                 <img class="icon" src="{{imagePath(pictogram)}}">
                             </div>

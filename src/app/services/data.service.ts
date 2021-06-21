@@ -336,6 +336,10 @@ export class DataService {
       signposts[0].color = "#ffffff";
       this.textColor = this.pictoColor = "#383838";
     }
+    else {
+      this.textColor = "#ffffff";
+      this.pictoColor = signposts[0].color;
+    }
 
     // [Fair-Overview일 경우 조금 특별한 작업을 시작한다.]
     if (type == "Fair-Overview") {

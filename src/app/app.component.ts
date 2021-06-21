@@ -253,8 +253,8 @@ export class AppComponent implements OnInit {
       console.log("paramater null");
     }
 
-    // this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
-    this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
+    this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
+    // this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
     // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:3000";
     // this.deviceLog.ip = this.gateway.serverIP = (this.deviceLog.ip !== "") ? this.deviceLog.ip : "https://wf-te-eu.samsungnexshop.com";
     this.deviceLog.screenId = (this.deviceLog.screenId !== "") ? this.deviceLog.screenId : "";    // 5f55db00e2db595ec0bc2eda
