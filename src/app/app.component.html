@@ -17,7 +17,7 @@
           <div *ngIf="signpost.type === 'Fair-Closest'" class="normal" [ngClass]="{'left': (zoneDirection() == 'left'), 'right': (zoneDirection() == 'right')}">
             <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
               <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
-                style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallback  Error($event, logoURL)">
+                style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
             </div>
             <!-- idx * 160 * 1.2 -->
             <div *ngIf="signpost?.layers[0]?.imgs != undefined || signpost?.layers[0]?.imgs?.length > 0">
@@ -726,25 +726,19 @@
 
                 <!-- 0번 레이어 -->
                 <div class="title">
-                    <div *ngIf="signpost.title != undefined">
-
-                        <!-- 글자 15자 이내 -->
-                        <!-- 글자 16자 이상 20자 이내 -->
-                        <!-- 글자 21자 이상 60자 이내 -->
-                        <!-- 글자 60자 이상 -->
-                        <div class="text" [ngClass]="{'_1': (signpost.title.length <= 13),
-                            '_2': ((signpost.title.length > 13) && (signpost.title.length <= 20)),
-                            '_3': ((signpost.title.length > 20) && (signpost.title.length <= 60)),
-                            '_4': (signpost.title.length > 60)}" [ngStyle]="{'color': data.textColor}">
-                            {{ signpost.title }}
-                        </div>
+                    <div class="text_overview">
+                      <span class="_1" [ngStyle]="{'color': data.textColor}">
+                          Hallen 
+                      </span>
+                      <span class="_1" [ngStyle]="{'color': data.textColor, 'font-style': 'italic'}">
+                          Halls 
+                      </span>
                     </div>
 
                     <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
                         <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
                             style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
                     </div>
-
                 </div>
 
                 <!-- 1번 레이어 -->
@@ -880,18 +874,13 @@
 
                 <!-- 0번 레이어 -->
                 <div class="title">
-                    <div *ngIf="signpost.title != undefined">
-
-                        <!-- 글자 15자 이내 -->
-                        <!-- 글자 16자 이상 20자 이내 -->
-                        <!-- 글자 21자 이상 60자 이내 -->
-                        <!-- 글자 60자 이상 -->
-                        <div class="text" [ngClass]="{'_1': (signpost.title.length <= 13),
-                            '_2': ((signpost.title.length > 13) && (signpost.title.length <= 20)),
-                            '_3': ((signpost.title.length > 20) && (signpost.title.length <= 60)),
-                            '_4': (signpost.title.length > 60)}" [ngStyle]="{'color': data.textColor}">
-                            {{ signpost.title }}
-                        </div>
+                    <div class="text_overview">
+                        <span class="_1" [ngStyle]="{'color': data.textColor}">
+                            Hallen 
+                        </span>
+                        <span class="_1" [ngStyle]="{'color': data.textColor, 'font-style': 'italic'}">
+                            Halls 
+                        </span>
                     </div>
 
                     <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
@@ -2126,18 +2115,14 @@
 
                 <!-- 0번 레이어 -->
                 <div class="title">
-
-                    <!-- 글자 8자 이내 -->
-                    <!-- 글자 8자 이상 20자 이내 -->
-                    <!-- 글자 21자 이상 30자 이내 -->
-                    <!-- 글자 30자 이상 -->
-                    <div class="text" [ngClass]="{'_1': (signpost.title.length <= 8),
-                        '_2': ((signpost.title.length > 8) && (signpost.title.length <= 20)),
-                        '_3': ((signpost.title.length > 20) && (signpost.title.length <= 30)),
-                        '_4': (signpost.title.length > 30)}" [ngStyle]="{'color': data.textColor}">
-                        {{signpost.title}}
+                    <div class="text_overview">
+                        <span class="_1" [ngStyle]="{'color': data.textColor}">
+                            Hallen 
+                        </span>
+                        <span class="_1" [ngStyle]="{'color': data.textColor, 'font-style': 'italic'}">
+                            Halls 
+                        </span>
                     </div>
-
                     <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
                         <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
                             style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
@@ -2272,16 +2257,13 @@
 
                 <!-- 0번 레이어 -->
                 <div class="title">
-
-                    <!-- 글자 8자 이내 -->
-                    <!-- 글자 8자 이상 20자 이내 -->
-                    <!-- 글자 21자 이상 30자 이내 -->
-                    <!-- 글자 30자 이상 -->
-                    <div class="text" [ngClass]="{'_1': (signpost.title.length <= 8),
-                        '_2': ((signpost.title.length > 8) && (signpost.title.length <= 20)),
-                        '_3': ((signpost.title.length > 20) && (signpost.title.length <= 30)),
-                        '_4': (signpost.title.length > 30)}" [ngStyle]="{'color': data.textColor}">
-                        {{signpost.title}}
+                    <div class="text_overview">
+                        <span class="_1" [ngStyle]="{'color': data.textColor}">
+                            Hallen 
+                        </span>
+                        <span class="_1" [ngStyle]="{'color': data.textColor, 'font-style': 'italic'}">
+                            Halls 
+                        </span>
                     </div>
 
                     <div *ngIf="logoURL && logoURL != '-1'" class="logo showLogo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
@@ -2667,5 +2649,5 @@
         </div>
       </div>
     </div>
-  
-  </div>
+
+</div>

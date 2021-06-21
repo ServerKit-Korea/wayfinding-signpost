@@ -277,35 +277,16 @@ export class DataService {
     sortSignposts.push(signposts[0]);
     signposts = signposts.slice(1);
 
-    // 16:9 비율의 Section-Overview의 경우 혼자만 정렬 기준이 달라진다.
-    if (type == "Section-Overview" && aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO) {
-      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
-        return (
-          a.title.localeCompare(b.title, undefined, {
-            numeric: true,
-          })
-          ||
-          a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
-            numeric: true,
-          })
-          ||
-          a.layers[0].direction - b.layers[0].direction
-        );
-      });
-    }
-
-    // 그 외 나머지는 홀 destname과 direction으로 갈린다.
-    else {
-      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
-        return (
-          a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
-            numeric: true,
-          })
-          ||
-          a.layers[0].direction - b.layers[0].direction
-        );
-      });
-    }
+    // 정렬순은 (오름차순) 홀 destname과 direction으로 갈린다.
+    signposts = signposts.sort((a: Signpost, b: Signpost): number => {
+      return (
+        a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
+          numeric: true,
+        })
+        ||
+        a.layers[0].direction - b.layers[0].direction
+      );
+    });
     sortSignposts = sortSignposts.concat(signposts);
     signposts = _.cloneDeep(sortSignposts);
 
@@ -459,7 +440,7 @@ export class DataService {
     // 여기서부터 턴이 갈리는데 하필이면 fair-overview가 이상한 조건 달고 나와서..
     if (fair_overview_special) {
       for (let i = 0; i < repeat; i++) {
-        if (signposts[i] != undefined) {
+        if (signposts[i] == undefined) {
           break;
         }
 
@@ -479,8 +460,7 @@ export class DataService {
     else {
       for (let i = 0; i < repeat; i++) {
         const nowIndex: number = i + start;
-
-        if (allSignposts[nowIndex] != undefined) {
+        if (allSignposts[nowIndex] == undefined) {
           break;
         }
 
@@ -488,9 +468,12 @@ export class DataService {
         if (initIndex != nowIndex) {
 
           // 만약 destname이 비어 있다면 생략한다.
-          if (allSignposts[nowIndex].layers[0].destName == undefined || allSignposts[nowIndex].layers[0].destName == "") {
-            repeat++;
-            continue;
+          // 아래 조건은 16:9 비율의 Section-Overview 타입 외에 destName이름이 ""로 들어오는 값을 넘긴다는 뜻.
+          if (!(type == "Section-Overview" && aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO)) {
+            if (allSignposts[nowIndex].layers[0].destName == undefined || allSignposts[nowIndex].layers[0].destName == "") {
+              repeat++;
+              continue;
+            }
           }
 
           // 여기는 주의해야 하는게 전체 인덱스 범위를 기준으로 잡았으니 당연히 전체 사인포스트를 기준으로 가져와야 한다.
@@ -500,7 +483,13 @@ export class DataService {
         }
       }
       this.signpostIndex += (repeat - 1);
-      this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex + 1);
+
+      if (this.signpostIndex >= lastIndex) {
+        this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex);
+      }
+      else {
+        this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex + 1);
+      }
     }
 
     console.log(" > [마무리] 후 signpostIndex : ", this.signpostIndex);
