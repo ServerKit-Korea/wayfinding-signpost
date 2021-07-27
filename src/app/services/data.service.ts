@@ -10,7 +10,7 @@ import * as appRootPath from "app-root-path";
 
 export const SIGNPOST_LOG = "signpostLog";
 export const EVENT_INDEX = "__EVENT_INDEX__";
-const SIGNPOST_INDEX = "__WF_SIGNPOST_INDEX__";
+export const SIGNPOST_INDEX = "__WF_SIGNPOST_INDEX__";
 
 // JSON
 import * as signpostLogJSON from "../../assets/signpostLog.json";
@@ -62,6 +62,7 @@ export class DataService {
   signpostPacks: SignpostPack[] = [];
   signpostIndex: number = -1;
   root: string = appRootPath.path;
+  readID: string;
 
   public textColor: string = "#ffffff";
   public pictoColor: string = "#ffffff";
@@ -72,13 +73,14 @@ export class DataService {
   }
 
   // Desc: AppComponent가 Hide가 된 순간 받았던 데이터를 퍼즐화 시킨다.
-  startPuzzleData(data?: any) {
+  startPuzzleData(readID: string, data?: any) {
+    this.readID = readID;
+    const read_Log: string = `${SIGNPOST_LOG}_${this.readID}`;
 
     // 인터넷 연결이 되지 않을 경우
     if (data === "Failed Connect") {
       console.log("Fail Server Connect, Local Storage Mode");
-
-      this.creation(this.gateway.callLocalStorage(SIGNPOST_LOG));
+      this.creation(this.gateway.callLocalStorage(read_Log));
     }
 
     // DEBUG MODE
@@ -91,14 +93,12 @@ export class DataService {
     // 인터넷은 연결 되었으나 받은 데이터가 없는 경우
     else if (data === undefined || data === null || data === [] || data === "") {
       console.log("Server Connect, but no data. Local Storage Mode");
-
-      this.creation(this.gateway.callLocalStorage(SIGNPOST_LOG));
+      this.creation(this.gateway.callLocalStorage(read_Log));
     }
 
     // 통신이 연결된 경우
     else {
       console.log("Server Connection and Data Puzzle");
-
       this.creation(data);
     }
   }
@@ -175,6 +175,7 @@ export class DataService {
    * @param length 반환할 Signpost 개수
    */
   public previewSignpost(length: number = 1, type: string = "default"): Signpost[] {
+    const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     // type이 Fair-Multiple 이거나 Section-Multiple일 경우
     if (type == "Fair-Multiple" || type == "Section-Multiple") {
@@ -188,7 +189,8 @@ export class DataService {
       for (let i = 0; i < lens; i++) {
           nowSignpostIndex++;
           if (this.signpostPacks.length <= nowSignpostIndex) {
-            nowSignpostIndex = 0;
+            nowSignpostIndex = -1;
+            break;
           }
           const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
           if (s.type == type) {
@@ -202,7 +204,7 @@ export class DataService {
             break;
           }
       }
-      this.gateway.saveLocalstorage(SIGNPOST_INDEX, nowSignpostIndex + 1);
+      this.gateway.saveLocalstorage(readWriteID, nowSignpostIndex + 1);
       return signposts;
     }
 
@@ -221,9 +223,28 @@ export class DataService {
             nowSignpostIndex = 0;
           }
           const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
+
+          // 색버그 수정
+          if (
+            s.color === undefined ||
+            s.color === "" ||
+            s.color === "#FFFFFF" ||
+            s.color === "#FFF" ||
+            s.color === "#ffffff" ||
+            s.color === "white" ||
+            s.color === "#fff"
+          ) {
+            s.color = "#ffffff";
+            this.textColor = this.pictoColor = "#383838";
+          }
+          else {
+            this.textColor = "#ffffff";
+            this.pictoColor = s.color;
+          }
           signposts.push(s);
       }
       this.signpostIndex = this.signpostIndex + (lens - 1);
+
       return signposts;
     }
   }
@@ -233,6 +254,7 @@ export class DataService {
    * 해당 타입의 Overview를 전부 불러온다.
    */
   public overviewSignpost(type: "Fair-Overview" | "Section-Overview"): Signpost[] {
+    const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     let allSignposts: Signpost[] = [];
     let signposts: Signpost[] = [];
@@ -303,24 +325,6 @@ export class DataService {
 
     // 일단 초기값으로 overview의 0번 레이어를 넣어 주고 0번을 삭제한다. (0번은 그냥 상단 장식용 데이터기 때문)
     returnSignpost.push(signposts[0]);
-
-    // 색버그 수정
-    if (
-      signposts[0].color === undefined ||
-      signposts[0].color === "" ||
-      signposts[0].color === "#FFFFFF" ||
-      signposts[0].color === "#FFF" ||
-      signposts[0].color === "#ffffff" ||
-      signposts[0].color === "white" ||
-      signposts[0].color === "#fff"
-    ) {
-      signposts[0].color = "#ffffff";
-      this.textColor = this.pictoColor = "#383838";
-    }
-    else {
-      this.textColor = "#ffffff";
-      this.pictoColor = signposts[0].color;
-    }
 
     // [Fair-Overview일 경우 조금 특별한 작업을 시작한다.]
     if (type == "Fair-Overview") {
@@ -455,7 +459,7 @@ export class DataService {
         }
       }
       this.signpostIndex += (fair_overview_backupSignpost.length - 1);
-      this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex + 1);
+      this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
     }
     else {
       for (let i = 0; i < repeat; i++) {
@@ -485,10 +489,10 @@ export class DataService {
       this.signpostIndex += (repeat - 1);
 
       if (this.signpostIndex >= lastIndex) {
-        this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex);
+        this.gateway.saveLocalstorage(readWriteID, this.signpostIndex);
       }
       else {
-        this.gateway.saveLocalstorage(SIGNPOST_INDEX, this.signpostIndex + 1);
+        this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
       }
     }
 
@@ -595,7 +599,7 @@ export class DataService {
 
   // signpostIndex를 불러온다.
   loadSignpostIndexKey() {
-    let index: string = this.gateway.callLocalStorage(SIGNPOST_INDEX);
+    let index: string = this.gateway.callLocalStorage(`${SIGNPOST_INDEX}_${this.readID}`);
     let nowIndex: number = 0;
     if (index == undefined || index == null) {
       nowIndex = 0;
@@ -617,7 +621,7 @@ export class DataService {
     console.log("this.signpostPacks.length : ", this.signpostPacks.length);
     console.log("signpost Index : ", this.signpostIndex);
 
-    this.gateway.saveLocalstorage(SIGNPOST_INDEX, nowIndex + 1);
+    this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, nowIndex + 1);
   }
 
 
@@ -652,7 +656,7 @@ export class DataService {
       console.log("default 준비");
 
       // 인덱스 초기화
-      this.gateway.saveLocalstorage(SIGNPOST_INDEX, 0);
+      this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, 0);
 
       let defaultSignpost: Signpost = new Signpost(undefined);
       defaultSignpost.type = "default";
@@ -698,14 +702,14 @@ export class DataService {
       }
 
       // 새로운 signpost일 경우
-      if (this.gateway.callLocalStorage(SIGNPOST_LOG) != JSON.stringify(signpost)) {
+      if (this.gateway.callLocalStorage(`${SIGNPOST_LOG}_${this.readID}`) != JSON.stringify(signpost)) {
         const css = "text-align:right; text-shadow: -1px -1px hsl(20%,76%,50%); font-size: 20px;";
         console.log("%cNEW SIGNPOST GET", css);
 
         // 인덱스 초기화
-        this.gateway.saveLocalstorage(EVENT_INDEX, -1);
-        this.gateway.saveLocalstorage(SIGNPOST_INDEX, 0);
-        this.gateway.saveLocalstorage(SIGNPOST_LOG, JSON.stringify(signpost));
+        this.gateway.saveLocalstorage(`${EVENT_INDEX}_${this.readID}`, -1);
+        this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, 0);
+        this.gateway.saveLocalstorage(`${SIGNPOST_LOG}_${this.readID}`, JSON.stringify(signpost));
       }
     }
 
@@ -770,31 +774,32 @@ export class DataService {
 
 
   eventIndex() {
-    return this.gateway.callLocalStorage(EVENT_INDEX) === undefined ? 0 : parseInt(this.gateway.callLocalStorage(EVENT_INDEX));
+    const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
+    return this.gateway.callLocalStorage(readWriteID) === undefined ? 0 : parseInt(this.gateway.callLocalStorage(readWriteID));
   }
 
 
   saveEventIndex(signpost: Signpost) {
-    if (parseInt(this.gateway.callLocalStorage(EVENT_INDEX)) === -1) {
-      this.gateway.saveLocalstorage(EVENT_INDEX, 0);
-    } else if (this.gateway.callLocalStorage(EVENT_INDEX) === undefined) {
-      this.gateway.saveLocalstorage(EVENT_INDEX, 0);
+    const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
+    if (parseInt(this.gateway.callLocalStorage(readWriteID)) === -1) {
+      this.gateway.saveLocalstorage(readWriteID, 0);
+    } else if (this.gateway.callLocalStorage(readWriteID) === undefined) {
+      this.gateway.saveLocalstorage(readWriteID, 0);
     } else {
-      if (isNaN(parseInt(this.gateway.callLocalStorage(EVENT_INDEX)))) {
-        this.gateway.saveLocalstorage(EVENT_INDEX, 0);
+      if (isNaN(parseInt(this.gateway.callLocalStorage(readWriteID)))) {
+        this.gateway.saveLocalstorage(readWriteID, 0);
       } else {
-        let idx = parseInt(this.gateway.callLocalStorage(EVENT_INDEX));
+        let idx = parseInt(this.gateway.callLocalStorage(readWriteID));
         let layerCount = (signpost.layers.length === 0 || signpost.layers.length === 1) ? -999 : signpost.layers.length - 1;
         if (layerCount === -999) {
-          this.gateway.saveLocalstorage(EVENT_INDEX, 0);
+          this.gateway.saveLocalstorage(readWriteID, 0);
         } else {
           if (layerCount / ((idx + 1) * 3) <= 1) {
             console.log("Check layerCount / ((idx + 1) * 3) : ", layerCount / ((idx + 1) * 3));
-            console.log("idx : ", this.gateway.callLocalStorage(EVENT_INDEX));
-
-            this.gateway.saveLocalstorage(EVENT_INDEX, 0);
+            console.log("idx : ", this.gateway.callLocalStorage(readWriteID));
+            this.gateway.saveLocalstorage(readWriteID, 0);
           } else {
-            this.gateway.saveLocalstorage(EVENT_INDEX, idx + 1);
+            this.gateway.saveLocalstorage(readWriteID, idx + 1);
           }
         }
       }
@@ -803,7 +808,8 @@ export class DataService {
 
 
   saveInitEventIndex() {
-    this.gateway.saveLocalstorage(EVENT_INDEX, 0);
+    const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
+    this.gateway.saveLocalstorage(readWriteID, 0);
   }
 
 

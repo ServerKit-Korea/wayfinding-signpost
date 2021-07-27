@@ -35,15 +35,15 @@
     "OUTDOOR_P1": "P1",
     "OUTDOOR_P8": "P8",
     "OUTDOOR_P9": "P9",
-    "OUTDOOR_H1": "H1",
-    "OUTDOOR_H2": "H2",
-    "OUTDOOR_H5": "H5",
+    "OUTDOOR_H1": "",
+    "OUTDOOR_H2": "",
+    "OUTDOOR_H5": "",
     "OUTDOOR_H10-NORTH": "",
     "OUTDOOR_H10-WEST": "",
     "OUTDOOR_H10-EAST": "",
-    "OUTDOOR_5-6": "",
-    "OUTDOOR_6-7": "",
-    "OUTDOOR_7-8": "",
-    "OUTDOOR_9-10-WEST": "",
-    "OUTDOOR_9-10-EAST": ""
+    "HARFE_5-6": "",
+    "HARFE_6-7": "",
+    "HARFE_7-8": "",
+    "HARFE_9-10-WEST": "",
+    "HARFE_9-10-EAST": ""
 }

@@ -255,35 +255,36 @@ export class AppComponent implements OnInit {
 
     this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
     // this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
-    // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:3000";
+    // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:4000";
     // this.deviceLog.ip = this.gateway.serverIP = "http://61.73.79.136:3000";
     this.deviceLog.screenId =
-      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5f55db00e2db595ec0bc2eda
+      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5b665b45f42a7841e2d59a5f, 5b693873f42a784e76f24279
     this.deviceLog.matrixId =
       this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : ""; // 2925
     this.deviceLog.zoneId =
       this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
     this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 60af589449a3cd9c5cde4c91;
 
+    const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway.getAwait(LOCAL_WAS).then(json => {
       console.log("getAwait result : ", json);
       this.data.loadLocalWASJSON(json);
 
       if (__IS_DEBUG__) {
-        this.data.startPuzzleData(1);
+        this.data.startPuzzleData(readID, 1);
       } else {
         // 최초 서버와 통신.
         // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
         this.gateway.post("/device", this.deviceLog).subscribe(
           (data) => {
             console.log("SUCCESS Server Connection: ", data);
-            this.data.startPuzzleData(data._body);
+            this.data.startPuzzleData(readID, data._body);
           },
           (error) => {
             // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
             console.log(error);
             // this.data.startPuzzleData(1);
-            this.data.startPuzzleData("Failed Connect");
+            this.data.startPuzzleData(readID, "Failed Connect");
           }
         );
       }
@@ -292,19 +293,19 @@ export class AppComponent implements OnInit {
         console.log("load awate Local WAS error : ", e);
 
         if (__IS_DEBUG__) {
-          this.data.startPuzzleData(1);
+          this.data.startPuzzleData(readID, 1);
         } else {
           // 최초 서버와 통신.
           // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
           this.gateway.post("/device", this.deviceLog).subscribe(
             (data) => {
               console.log("SUCCESS Server Connection : ", data);
-              this.data.startPuzzleData(data._body);
+              this.data.startPuzzleData(readID, data._body);
             },
             (error) => {
               // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
               console.log(error);
-              this.data.startPuzzleData(1);
+              this.data.startPuzzleData(readID, 1);
               // this.data.startPuzzleData("Failed Connect");
             }
           );
@@ -372,7 +373,8 @@ export class AppComponent implements OnInit {
 
     // -- kinds: Fair-Multiple, Section-Multiple
     else if (["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)) {
-      const rollingCount = 3;   // 루프되는 횟수
+      const rollingCount = this.sectionMultipleSignpostArray.length;   // 루프되는 횟수
+      console.log("rollingCount : ", rollingCount);
       if (this.sectionMultipleRollingCount >= rollingCount) {
           clearTimeout(this.sectionMultipleTimeout);
           this.sectionMultipleTimeout = null;
@@ -380,18 +382,39 @@ export class AppComponent implements OnInit {
       }
       this.signpost = this.sectionMultipleSignpostArray[this.sectionMultipleIndex];
 
+      // 색버그 수정
+      if (
+        this.signpost.color === undefined ||
+        this.signpost.color === "" ||
+        this.signpost.color === "#FFFFFF" ||
+        this.signpost.color === "#FFF" ||
+        this.signpost.color === "#ffffff" ||
+        this.signpost.color === "white" ||
+        this.signpost.color === "#fff"
+      ) {
+        this.signpost.color = "#ffffff";
+        this.data.textColor = this.data.pictoColor = "#383838";
+      }
+      else {
+        this.data.textColor = "#ffffff";
+        this.data.pictoColor = this.signpost.color;
+      }
+
+      console.log("multiple Rolling time : ",  this.maxRollingTime / this.sectionMultipleSignpostArray.length);
       if (this.equalSignpostNext) {
-        this.sectionMultipleTimeout = setTimeout(() => {
-          this.sectionMultipleIndex++;
-          this.sectionMultipleRollingCount++;
-          if (this.sectionMultipleRollingCount < rollingCount) {
-            if (this.sectionMultipleIndex >= this.sectionMultipleSignpostArray.length) {
-              this.sectionMultipleIndex = 0;
+        if (this.sectionMultipleSignpostArray.length > 1) {
+          this.sectionMultipleTimeout = setTimeout(() => {
+            this.sectionMultipleIndex++;
+            this.sectionMultipleRollingCount++;
+            if (this.sectionMultipleRollingCount < rollingCount) {
+              if (this.sectionMultipleIndex >= this.sectionMultipleSignpostArray.length) {
+                this.sectionMultipleIndex = 0;
+              }
+              this.equalSignpostNext = false;
+              this.cd.detectChanges();
             }
-            this.equalSignpostNext = false;
-            this.cd.detectChanges();
-          }
-        }, 5000);
+          }, this.maxRollingTime / this.sectionMultipleSignpostArray.length);
+        }
       }
 
       this.equalSignpostNext = true;
@@ -659,6 +682,25 @@ export class AppComponent implements OnInit {
 
     // -- kinds: Multiple Type
     else if (["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)) {
+
+      // 색버그 수정
+      if (
+        this.signpost.color === undefined ||
+        this.signpost.color === "" ||
+        this.signpost.color === "#FFFFFF" ||
+        this.signpost.color === "#FFF" ||
+        this.signpost.color === "#ffffff" ||
+        this.signpost.color === "white" ||
+        this.signpost.color === "#fff"
+      ) {
+        this.signpost.color = "#ffffff";
+        this.data.textColor = this.data.pictoColor = "#383838";
+      }
+      else {
+        this.data.textColor = "#ffffff";
+        this.data.pictoColor = this.signpost.color;
+      }
+
       const rollingCount = 3;       // 루프되는 횟수
       this.sectionMultipleIndex = 0;
       this.sectionMultipleRollingCount = 0;
@@ -672,6 +714,10 @@ export class AppComponent implements OnInit {
         this.logo_count = 0;
         this.logoURL = this.signpost.layers[0].logos[this.logo_count];
       }
+
+      console.log("sectionMultipleSignpostArray : ", this.sectionMultipleSignpostArray.length);
+
+      // if(this.sectionMultipleSignpostArray.length <= 0)
 
       // false => true, opacity: 0 > 1
       this.equalSignpostNext = true;
@@ -745,7 +791,7 @@ export class AppComponent implements OnInit {
       }
 
       if (detailLayerTime <= 5000) {
-        detailLayerTime = 5500;
+        detailLayerTime = 6000;
       }
 
       console.log(">> detailLayerTime : ", detailLayerTime);
@@ -852,7 +898,7 @@ export class AppComponent implements OnInit {
       console.log("layer loop count : " + cnt);
 
       if (detailLayerTime <= 5000) {
-        detailLayerTime = 5500;
+        detailLayerTime = 6000;
       }
       console.log("reverse detailLayerTime : " + detailLayerTime);
 
@@ -973,7 +1019,7 @@ export class AppComponent implements OnInit {
         detail = (type == "normal") ? "dark" : "light";
       }
 
-      const path: string = `${this.gateway.serverIP}/static/facility/${detail}/${image}.svg?p=${this.cacheReboot}`;
+      const path: string = `${this.gateway.serverIP}/static/facility/${detail}/${image}.svg`;
       return path;
     }
   }
