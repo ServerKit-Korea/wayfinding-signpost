@@ -6,6 +6,7 @@
 /wf_build
 /tmp
 *.zip
+./wf_build
 
 # dependencies
 /node_modules
