@@ -1432,7 +1432,7 @@
           <img [@fadeInOut]="equalSignpostNext" class="image" src="./assets/default/89.png">
         </div>
   
-        <!-- Fair-Closest, Fair-Multiple -->
+        <!-- Fair-Closest, Fair-Facility -->
         <div *ngSwitchCase="signpost.type === 'Fair-Closest' || signpost.type === 'Fair-Facility'" class="fair" data-aspect-ratio="8:9" [style.background-color]="signpost.color">
   
           <!-- Normal Panel-->
@@ -1697,7 +1697,7 @@
         <div *ngSwitchCase="signpost.type === 'Fair-Multiple'" class="fair" data-aspect-ratio="8:9" [style.background-color]="signpost.color">
 
             <!-- Only Normal Panel-->
-            <div class="normal" [ngClass]="{'left': (zoneDirection() == 'left'), 'right': (zoneDirection() == 'right')}">
+            <div [@fadeInOut]="equalSignpostNext" (@fadeInOut.done)="animationDone($event)" class="normal" [ngClass]="{'left': (zoneDirection() == 'left'), 'right': (zoneDirection() == 'right')}">
                 <div class="logo" [ngClass]="{'blackLogo': (data.textColor === '#383838')}">
                     <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
                         style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
