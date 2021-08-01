@@ -258,7 +258,7 @@ export class AppComponent implements OnInit {
     // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:4000";
     // this.deviceLog.ip = this.gateway.serverIP = "http://61.73.79.136:3000";
     this.deviceLog.screenId =
-      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5b665b45f42a7841e2d59a5f, 5b693873f42a784e76f24279
+      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5f55db00e2db595ec0bc2eda
     this.deviceLog.matrixId =
       this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : ""; // 2925
     this.deviceLog.zoneId =

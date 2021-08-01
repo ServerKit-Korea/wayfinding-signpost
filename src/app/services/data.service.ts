@@ -300,15 +300,35 @@ export class DataService {
     signposts = signposts.slice(1);
 
     // 정렬순은 (오름차순) 홀 destname과 direction으로 갈린다.
-    signposts = signposts.sort((a: Signpost, b: Signpost): number => {
-      return (
-        a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
-          numeric: true,
-        })
-        ||
-        a.layers[0].direction - b.layers[0].direction
-      );
-    });
+    if (type == "Fair-Overview") {
+      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
+        return (
+          a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
+            numeric: true,
+          })
+          ||
+          a.layers[0].direction - b.layers[0].direction
+        );
+      });
+    }
+    else {
+      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
+        const res: number = a.layers[0].destName.localeCompare(
+          b.layers[0].destName,
+          undefined,
+          {
+            numeric: true,
+          }
+        );
+        if (res === 0) {
+          return a.title.localeCompare(b.title, undefined, {
+            numeric: true,
+          });
+        } else {
+          return res;
+        }
+      });
+    }
     sortSignposts = sortSignposts.concat(signposts);
     signposts = _.cloneDeep(sortSignposts);
 
@@ -739,6 +759,16 @@ export class DataService {
       this.loadSignpostIndexKey();
       this.event.emitEvent("loadData_SignpostLog");
     }
+
+    this.sortMultipleType("Fair-Closest");
+    this.sortMultipleType("Fair-Facility");
+    this.sortMultipleType("Fair-Multiple");
+    this.sortMultipleType("Section-Closest");
+    this.sortMultipleType("Section-Facility");
+    this.sortMultipleType("Section-Multiple");
+
+    console.log("Result signpost : ", this.signpostPacks);
+
     console.log("** All Signpost array : ", signpost);
   }
 
@@ -854,5 +884,76 @@ export class DataService {
       return convert[name];
     }
     return "";
+  }
+
+
+  // 정렬 시작
+  sortMultipleType = (type: string) => {
+    let allSignposts: Signpost[] = [];
+    let _signposts: Signpost[] = [];
+    let initIndex: number = 0;
+
+    // Overview의 초기 인덱스를 구하기
+    for (const s of this.signpostPacks) {
+      if (s.signpost.type == type) {
+        break;
+      }
+      initIndex++;
+    }
+
+    // Overview의 해당 타입만 구하기
+    for (const s of this.signpostPacks) {
+      allSignposts.push(s.signpost);
+      if (s.signpost.type == type) {
+        _signposts.push(s.signpost);
+      }
+    }
+
+    /**
+     * 정렬 개시
+     * 정렬 순서는 다음과 같다.
+     *
+     * (16:9 Only) 섹션 이름 1순위 오름차순
+     * 홀번호, 화살표 우선순위로 오름차순
+     */
+    if (type.indexOf("Fair") != -1) {
+      _signposts = _signposts.sort((a: Signpost, b: Signpost): number => {
+        return (
+          a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
+            numeric: true,
+          })
+          ||
+          a.layers[0].direction - b.layers[0].direction
+        );
+      });
+    }
+    else {
+      _signposts = _signposts.sort((a: Signpost, b: Signpost): number => {
+        const res: number = a.layers[0].destName.localeCompare(
+          b.layers[0].destName,
+          undefined,
+          {
+            numeric: true,
+          }
+        );
+        if (res === 0) {
+          return a.title.localeCompare(b.title, undefined, {
+            numeric: true,
+          });
+        } else {
+          return res;
+        }
+      });
+    }
+
+    // 정렬 완료 된 친구들을 원래 친구에 삽입한다.
+    let cnt: number = 0;
+    for (let i = initIndex; i < initIndex + _signposts.length; i++) {
+      allSignposts[i] = _signposts[cnt++];
+    }
+
+    for (let i = 0; i < this.signpostPacks.length; i++) {
+      this.signpostPacks[i].signpost = allSignposts[i];
+    }
   }
 }
