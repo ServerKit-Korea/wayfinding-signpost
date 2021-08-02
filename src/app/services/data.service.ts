@@ -341,6 +341,22 @@ export class DataService {
     // 추가로 signposts의 0번은 이름을 특정 이름으로 고정한다(고객사 요청)
     signposts[0].title = "Hallen Halls";
 
+    this.textColor = "#ffffff";
+    this.pictoColor = signposts[0].color;
+    if (
+      signposts[0].color === undefined ||
+      signposts[0].color === "" ||
+      signposts[0].color === "#FFFFFF" ||
+      signposts[0].color === "#FFF" ||
+      signposts[0].color === "#ffffff" ||
+      signposts[0].color === "white" ||
+      signposts[0].color === "#fff"
+    ) {
+      // signpost.color = "#54B948";
+      signposts[0].color = "#ffffff";
+      this.textColor = this.pictoColor = "#383838";
+    }
+
     console.log(" > 가공 전, 그러니까 해당 Overview의 전체 signpost : ", signposts);
 
     // 일단 초기값으로 overview의 0번 레이어를 넣어 주고 0번을 삭제한다. (0번은 그냥 상단 장식용 데이터기 때문)
