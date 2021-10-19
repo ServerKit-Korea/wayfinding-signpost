@@ -283,7 +283,7 @@ export class AppComponent implements OnInit {
           (error) => {
             // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
             console.log(error);
-            // this.data.startPuzzleData(1);
+            // this.data.startPuzzleData(readID, 2);
             this.data.startPuzzleData(readID, "Failed Connect");
           }
         );
@@ -305,8 +305,8 @@ export class AppComponent implements OnInit {
             (error) => {
               // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
               console.log(error);
-              this.data.startPuzzleData(readID, 1);
-              // this.data.startPuzzleData("Failed Connect");
+              // this.data.startPuzzleData(readID, 2);
+              this.data.startPuzzleData("Failed Connect");
             }
           );
         }
@@ -381,6 +381,17 @@ export class AppComponent implements OnInit {
           return;
       }
       this.signpost = this.sectionMultipleSignpostArray[this.sectionMultipleIndex];
+
+      if (this.signpost.type == "Section-Multiple") {
+        this.logo_count = 0;
+        const changeLogoURL = this.signpost.layers[0].logos[this.logo_count];
+
+        if (this.logoURL != changeLogoURL) {
+          this.logoURL = changeLogoURL;
+          this.nextLogoOpen = true;
+          this.cd.detectChanges();
+        }
+      }
 
       // 색버그 수정
       if (
@@ -710,7 +721,7 @@ export class AppComponent implements OnInit {
       this.sectionMultipleSignpostArray.push(this.signpost);
       this.sectionMultipleSignpostArray = this.sectionMultipleSignpostArray.concat(this.data.previewSignpost(rollingCount - 1, this.signpost.type));
 
-      if (this.signpost.type == "Fair-Multiple") {
+      if (this.signpost.type == "Section-Multiple") {
         this.logo_count = 0;
         this.logoURL = this.signpost.layers[0].logos[this.logo_count];
       }
@@ -735,7 +746,32 @@ export class AppComponent implements OnInit {
       this.overviewSignposts = this.data.overviewSignpost(t);
       this.signpost = Object.assign(this.overviewSignposts[0]);
       this.overviewSignposts = this.overviewSignposts.slice(1);
-      console.log("this.overviewSignposts : ", this.overviewSignposts);
+
+      let result: boolean = false;
+      if (t == "Section-Overview") {
+        result = this.data.previewNotWorkingOnlySectionOverviewPreview();
+      }
+
+      if (result) {
+        // 3번 루핑 돌지 않으면 강제로 3번으로 만들어 준다.
+        if (this.overviewSignposts.length <= 6) {
+          this.data.signpostIndex++;
+
+          let emptySignpost: Signpost = new Signpost(undefined);
+          const emptyLayer: Layer = new Layer();
+          emptySignpost.type = "Section-Overview";
+          emptySignpost.color = "-1";
+          emptySignpost.layers = [];
+          emptySignpost.layers.push(emptyLayer);
+
+          const repeatEmptyLength: number = (3 - (this.overviewSignposts.length % 3) == 3) ? 0 : 3 - (this.overviewSignposts.length % 3);
+          for (let i = 0; i < repeatEmptyLength; i++) {
+            this.overviewSignposts.push(emptySignpost);
+          }
+          const r: number = this.overviewSignposts.length < 4 ? 2 : 1;
+          this.overviewSignposts = this.overviewSignposts.concat(this.data.overviewSignpost(t, r).slice(1));
+        }
+      }
 
       let logoTime = 1;
       if (this.logo_count != -1) {

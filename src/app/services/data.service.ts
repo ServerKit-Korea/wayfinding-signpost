@@ -14,6 +14,7 @@ export const SIGNPOST_INDEX = "__WF_SIGNPOST_INDEX__";
 
 // JSON
 import * as signpostLogJSON from "../../assets/signpostLog.json";
+import * as defaultJSON from "../../assets/defaultJSON.json";
 import * as convertJSON from "../../assets/convert.json";
 
 class SignpostPack {
@@ -77,7 +78,7 @@ export class DataService {
     this.readID = readID;
     const read_Log: string = `${SIGNPOST_LOG}_${this.readID}`;
 
-    // 인터넷 연결이 되지 않을 경우
+    // 인터넷 연결이 되지 않을 경우 (기존 데이터를 불러올 경우)
     if (data === "Failed Connect") {
       console.log("Fail Server Connect, Local Storage Mode");
       this.creation(this.gateway.callLocalStorage(read_Log));
@@ -86,8 +87,13 @@ export class DataService {
     // DEBUG MODE
     else if (data == 1) {
       console.log("DEBUG Mode, JSON Mode");
-
       this.creation(signpostLogJSON);
+    }
+
+    // NETWORK ERROR Work (기존 데이터를 안 불러오고 네트워크 에러 디폴트 이미지를 띄워야 할 경우)
+    else if (data == 2) {
+      console.log("Network Error Mode, Default Image(network) Render");
+      this.creation(defaultJSON);
     }
 
     // 인터넷은 연결 되었으나 받은 데이터가 없는 경우
@@ -96,7 +102,7 @@ export class DataService {
       this.creation(this.gateway.callLocalStorage(read_Log));
     }
 
-    // 통신이 연결된 경우
+    // 통신이 연결된 경우 (성공 처리)
     else {
       console.log("Server Connection and Data Puzzle");
       this.creation(data);
@@ -253,7 +259,7 @@ export class DataService {
   /**
    * 해당 타입의 Overview를 전부 불러온다.
    */
-  public overviewSignpost(type: "Fair-Overview" | "Section-Overview"): Signpost[] {
+  public overviewSignpost(type: "Fair-Overview" | "Section-Overview", r: number = 3): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     let allSignposts: Signpost[] = [];
@@ -357,7 +363,7 @@ export class DataService {
       this.textColor = this.pictoColor = "#383838";
     }
 
-    console.log(" > 가공 전, 그러니까 해당 Overview의 전체 signpost : ", signposts);
+    // console.log(" > 가공 전, 그러니까 해당 Overview의 전체 signpost : ", signposts);
 
     // 일단 초기값으로 overview의 0번 레이어를 넣어 주고 0번을 삭제한다. (0번은 그냥 상단 장식용 데이터기 때문)
     returnSignpost.push(signposts[0]);
@@ -395,9 +401,9 @@ export class DataService {
 
             const ceil: number = (combineSignpost.length % maxDirection) != 0 ? 1 : 0;
             const div: number = Math.floor(combineSignpost.length / maxDirection) + ceil;
-            console.log("ceil : ", ceil);
-            console.log("Math.floor(combineSignpost.length / maxDirection) : ", Math.floor(combineSignpost.length / maxDirection));
-            console.log("div : ", div);
+            // console.log("ceil : ", ceil);
+            // console.log("Math.floor(combineSignpost.length / maxDirection) : ", Math.floor(combineSignpost.length / maxDirection));
+            // console.log("div : ", div);
 
             for (let i = 0; i < div; i++) {
               let newSignpost: Signpost = new Signpost(undefined);
@@ -453,12 +459,12 @@ export class DataService {
     lastIndex = initIndex + signposts.length;
 
     const overviewSize: number = signposts.length;    // overview 템플릿의 최대 개수
-    const maxLayerSize: number = 9;                   // 최대 출력할 개수
+    const maxLayerSize: number = r * 3;               // 최대 출력할 개수
 
-    console.log(" > 현재 인덱스 : ", this.signpostIndex);
-    console.log(" > overview 초기 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 첫번째 : ", initIndex);
-    console.log(" > overview 마지막 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 마지막 : ", lastIndex);
-    console.log(" > overview의 총 Size : ", overviewSize);
+    // console.log(" > 현재 인덱스 : ", this.signpostIndex);
+    // console.log(" > overview 초기 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 첫번째 : ", initIndex);
+    // console.log(" > overview 마지막 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 마지막 : ", lastIndex);
+    // console.log(" > overview의 총 Size : ", overviewSize);
 
     // 최대 반복은 9개지만 초기에는 더미 데이터인 0번을 포함하므로 10개로 설정한다.
     let repeat: number = lastIndex - this.signpostIndex;
@@ -535,6 +541,24 @@ export class DataService {
     console.log(" > [마무리] 후 signpostIndex : ", this.signpostIndex);
     console.log(" > [마무리] 가공 후 signpost : ", returnSignpost);
     return returnSignpost;
+  }
+
+
+  /**
+   * 아무 짓도 안 하고 다음 overview 친구가 계속 overview인지 검사
+   */
+  public previewNotWorkingOnlySectionOverviewPreview = (): boolean => {
+    // 마지막 인덱스가 아니면 컷
+    if (this.signpostPacks.length > this.signpostIndex + 1) {
+      return false;
+    }
+
+    for (const s of this.signpostPacks) {
+      if (s.signpost.type != "Section-Overview") {
+        return false;
+      }
+    }
+    return true;
   }
 
 
@@ -653,10 +677,6 @@ export class DataService {
     if (isNaN(this.signpostIndex)) {
       this.signpostIndex = 0;
     }
-
-    console.log("this.signpostPacks.length : ", this.signpostPacks.length);
-    console.log("signpost Index : ", this.signpostIndex);
-
     this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, nowIndex + 1);
   }
 
@@ -754,7 +774,7 @@ export class DataService {
     if (signpost != undefined || signpost != null || signpost.length >= 1) {
       try {
         for (let s of signpost) {
-          if (s.layers.length <= 0 || s.type == "default") {
+          if (s.layers.length <= 0 || s.type == "default" || s.type == "super-default") {
           }
           else {
             s.layers[0].destName = this.convertDestName(s.layers[0].destName);
@@ -782,10 +802,6 @@ export class DataService {
     this.sortMultipleType("Section-Closest");
     this.sortMultipleType("Section-Facility");
     this.sortMultipleType("Section-Multiple");
-
-    console.log("Result signpost : ", this.signpostPacks);
-
-    console.log("** All Signpost array : ", signpost);
   }
 
 
@@ -866,7 +882,6 @@ export class DataService {
     }
 
     if (JSON.parse(JSON.stringify(obj)) instanceof Array) {
-      console.log("Array");
       if (Object.keys(obj).length <= 0) {
         return true;
       } else if (Object.keys(obj).length <= 1) {

@@ -7,7 +7,12 @@
   
         <!-- Default -->
         <div *ngSwitchCase="signpost.type === 'default'" class="default" data-aspect-ratio="16:9">
-          <img [@fadeInOut]="equalSignpostNext" class="image" src="./assets/default/169.png">
+          <img [@fadeInOut]="equalSignpostNext" class="image" [src]="defaultTemplatePath('169') | safe: 'url'" (error)="defaultTemplatePathError($event, '169')">
+        </div>
+
+        <!-- Super Default -->
+        <div *ngSwitchCase="signpost.type === 'super-default'" class="default" data-aspect-ratio="16:9">
+          <img [@fadeInOut]="equalSignpostNext" class="image" src="./assets/default(super)/169.png">
         </div>
 
         <!-- Fair -->
@@ -366,6 +371,7 @@
                   <img [@logoChange]="nextLogoOpen" (@logoChange.done)="logoChangeDone($event)" class="mainLogo" [src]="logoPath(logoURL) | safe: 'url'"
                       style="opacity: 0;" (load)="onCallbackLoad($event, logoURL)" (error)="onCallbackError($event, logoURL)">
               </div>
+ 
               <div *ngIf="signpost.layers[0].imgs != undefined || signpost.layers[0].imgs.length > 0">
   
                   <div *ngIf="zoneDirection() === 'left'">
@@ -387,11 +393,11 @@
                       </div>
                   </div>
               </div>
-  
-  
+    
               <div *ngIf="signpost" [ngClass]="{'destination': true, 'noarrow': (checkArrowHide(signpost.layers[0].direction))}" [ngStyle]="{'color': data.textColor}">
                   {{ signpost.layers[0].destName }}
               </div>
+              
               <div [ngSwitch]="signpost.layers[0].direction">
                   <div *ngSwitchCase=1>
                       <img class="arrow" [ngClass]="{'black': (data.textColor === '#383838')}" src="./assets/direction/1.png"> </div>
@@ -445,8 +451,7 @@
                 </div>
 
                 <div *ngIf="signpost.layers[0].imgs != undefined || signpost.layers[0].imgs.length > 0">
-  
-                    <div *ngIf="zoneDirection() === 'left'">
+                      <div *ngIf="zoneDirection() === 'left'">
                         <div *ngFor="let pictogram of signpost.layers[0].imgs; let idx = index;" class="pictograms" [style.right.vw]="(idx*10.3125)"
                             [ngClass]="{'round': (signpost.color == '#ffffff')}"
                             [style.background-color]="data.pictoColor">
@@ -894,7 +899,7 @@
 
                     <!-- 섹션 홀 넘버 & 이름 설정 -->    
                     <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">
-                        <div *ngIf="overviewLayerSignposts[0] != undefined">
+                        <div *ngIf="overviewLayerSignposts[0] != undefined && overviewLayerSignposts[0].layers.length >= 1 && overviewLayerSignposts[0].color != '-1'">
 
                             <!-- 색상 설정 -->
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[0].color"></div>
@@ -973,7 +978,7 @@
                     
                     <!-- 섹션 홀 넘버 & 이름 설정 -->   
                     <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">
-                        <div *ngIf="overviewLayerSignposts[1] != undefined">
+                        <div *ngIf="overviewLayerSignposts[1] != undefined && overviewLayerSignposts[1].layers.length >= 1 && overviewLayerSignposts[1].color != '-1'">
 
                             <!-- 색상 설정 -->                            
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[1].color"></div>
@@ -1053,7 +1058,7 @@
                     
                     <!-- 섹션 홀 넘버 & 이름 설정 -->  
                     <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">
-                        <div *ngIf="overviewLayerSignposts[2] != undefined">
+                        <div *ngIf="overviewLayerSignposts[2] != undefined && overviewLayerSignposts[2].layers.length >= 1 && overviewLayerSignposts[2].color != '-1'">
 
                             <!-- 색상 설정 -->
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[2].color"></div>
@@ -1429,9 +1434,14 @@
   
         <!-- Default -->
         <div *ngSwitchCase="signpost.type === 'default'" class="default" data-aspect-ratio="8:9">
-          <img [@fadeInOut]="equalSignpostNext" class="image" src="./assets/default/89.png">
+          <img [@fadeInOut]="equalSignpostNext" class="image" [src]="defaultTemplatePath('89') | safe: 'url'" (error)="defaultTemplatePathError($event, '89')">
         </div>
   
+        <!-- Super Default -->
+        <div *ngSwitchCase="signpost.type === 'super-default'" class="default" data-aspect-ratio="16:9">
+          <img [@fadeInOut]="equalSignpostNext" class="image" src="./assets/default(super)/89.png">
+        </div>
+
         <!-- Fair-Closest, Fair-Facility -->
         <div *ngSwitchCase="signpost.type === 'Fair-Closest' || signpost.type === 'Fair-Facility'" class="fair" data-aspect-ratio="8:9" [style.background-color]="signpost.color">
   
@@ -2275,7 +2285,7 @@
                 <!-- 1번 레이어 -->
                 <div class="sub_1">
                     <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">
-                        <div *ngIf="overviewLayerSignposts[0] != undefined">
+                        <div *ngIf="overviewLayerSignposts[0] != undefined && overviewLayerSignposts[0].layers.length >= 1 && overviewLayerSignposts[0].color != '-1'">
 
                             <!-- 색상 설정 -->
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[0].color"></div>
@@ -2319,8 +2329,8 @@
 
                 <!-- 2번 레이어 -->
                 <div class="sub_2">
-                    <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">                            
-                        <div *ngIf="overviewLayerSignposts[1] != undefined">
+                    <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)"> 
+                        <div *ngIf="overviewLayerSignposts[1] != undefined && overviewLayerSignposts[1].layers.length >= 1 && overviewLayerSignposts[1].color != '-1'">
 
                             <!-- 색상 설정 -->
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[1].color"></div>
@@ -2363,7 +2373,7 @@
                 <!-- 3번 레이어 -->
                 <div class="sub_3">
                     <div [@subFadeInOut]="nextLayerOpen" (@subFadeInOut.done)="animationDone($event)">
-                        <div *ngIf="overviewLayerSignposts[2] != undefined">
+                        <div *ngIf="overviewLayerSignposts[2] != undefined && overviewLayerSignposts[2].layers.length >= 1 && overviewLayerSignposts[2].color != '-1'">
 
                             <!-- 색상 설정 -->
                             <div class="header_color" [style.background-color]="overviewLayerSignposts[2].color"></div>
