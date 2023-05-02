@@ -4,7 +4,7 @@ import {
   HostListener,
   Inject,
   ChangeDetectorRef,
-  NgZone
+  NgZone,
 } from "@angular/core";
 import {
   trigger,
@@ -12,7 +12,7 @@ import {
   transition,
   style,
   animate,
-  keyframes
+  keyframes,
 } from "@angular/animations";
 
 import * as appRootPath from "app-root-path";
@@ -23,8 +23,17 @@ import { DataService } from "./services/data.service";
 import { EventService } from "./services/event.service";
 
 // data
-import { Signpost, Layer, Device, __IS_DEBUG__, LOCAL_WAS } from "./common/common";
+import {
+  Signpost,
+  Layer,
+  Device,
+  __IS_DEBUG__,
+  LOCAL_WAS,
+} from "./common/common";
 import { clearTimeout } from "timers";
+
+// 요청 테스트
+// import * as nxClientJSON from "C:/Program Files (x86)/Samsung SDS/NxClient/Schedules/Contents.json";
 
 @Component({
   selector: "ar-root",
@@ -36,13 +45,13 @@ import { clearTimeout } from "timers";
       transition(":enter", [
         state("visible", style({ display: "block", opacity: 0 })),
         style({ display: "block", opacity: 0 }),
-        animate("0.7s ease-in", style({ display: "block", opacity: 1 }))
+        animate("0.7s ease-in", style({ display: "block", opacity: 1 })),
       ]),
       transition(":leave", [
         state("invisible", style({ display: "block", opacity: 0 })),
         style({ display: "block", opacity: 1 }),
-        animate("1s ease-out", style({ display: "block", opacity: 0 }))
-      ])
+        animate("1s ease-out", style({ display: "block", opacity: 0 })),
+      ]),
     ]),
 
     // trigger : 메인 패널 컨텐츠 페이드 인-아웃 애니메이션
@@ -50,12 +59,12 @@ import { clearTimeout } from "timers";
       transition(":enter", [
         state("visible", style({ display: "block", opacity: 0 })),
         style({ display: "block", opacity: 0 }),
-        animate("0.7s ease-in", style({ display: "block", opacity: 1 }))
+        animate("0.7s ease-in", style({ display: "block", opacity: 1 })),
       ]),
       transition(":leave", [
         state("invisible", style({ display: "block", opacity: 0 })),
         style({ display: "block", opacity: 1 }),
-        animate("0.8s ease-out", style({ display: "block", opacity: 0 }))
+        animate("0.8s ease-out", style({ display: "block", opacity: 0 })),
       ]),
 
       transition("true => false", [
@@ -63,9 +72,9 @@ import { clearTimeout } from "timers";
           "700ms ease-in",
           keyframes([
             style({ opacity: 1, offset: 0 }),
-            style({ opacity: 0, offset: 1 })
+            style({ opacity: 0, offset: 1 }),
           ])
-        )
+        ),
       ]),
       transition("false => true", [
         animate(
@@ -73,10 +82,10 @@ import { clearTimeout } from "timers";
           keyframes([
             style({ opacity: 0, offset: 0 }),
             style({ opacity: 0.7, offset: 0.5 }),
-            style({ opacity: 1, offset: 1 })
+            style({ opacity: 1, offset: 1 }),
           ])
-        )
-      ])
+        ),
+      ]),
     ]),
 
     // trigger : Normal 로고 컨텐츠 페이드 인-아웃 애니메이션
@@ -85,15 +94,15 @@ import { clearTimeout } from "timers";
         animate(
           "1000ms ease-in",
           keyframes([style({ opacity: 1 }), style({ opacity: 0 })])
-        )
+        ),
       ]),
 
       transition("true => false", [
         animate(
           "1000ms ease-in",
           keyframes([style({ opacity: 0 }), style({ opacity: 1 })])
-        )
-      ])
+        ),
+      ]),
     ]),
 
     // trigger : 서브 컨텐츠 페이드 인-아웃 애니메이션
@@ -104,17 +113,17 @@ import { clearTimeout } from "timers";
           keyframes([
             style({ opacity: 1, offset: 0 }),
             style({ opacity: 0, offset: 0.6 }),
-            style({ opacity: 0, offset: 1 })
+            style({ opacity: 0, offset: 1 }),
           ])
-        )
+        ),
       ]),
 
       transition("true => false", [
         animate(
           "800ms ease-in",
           keyframes([style({ opacity: 0 }), style({ opacity: 1 })])
-        )
-      ])
+        ),
+      ]),
     ]), // subFadeInOut
 
     // trigger : 서브 컨텐츠 페이드 인-아웃 애니메이션
@@ -125,16 +134,16 @@ import { clearTimeout } from "timers";
           keyframes([
             style({ opacity: 1, offset: 0 }),
             style({ opacity: 0, offset: 0.6 }),
-            style({ opacity: 0, offset: 1 })
+            style({ opacity: 0, offset: 1 }),
           ])
-        )
+        ),
       ]),
       transition("true => false", [
         animate(
           "800ms ease-in",
           keyframes([style({ opacity: 0 }), style({ opacity: 1 })])
-        )
-      ])
+        ),
+      ]),
     ]),
 
     //  trigger : 이벤트 내부 언어별 인-아웃 애니메이션
@@ -145,20 +154,20 @@ import { clearTimeout } from "timers";
           keyframes([
             style({ opacity: 1, offset: 0 }),
             style({ opacity: 0, offset: 0.6 }),
-            style({ opacity: 0, offset: 1 })
+            style({ opacity: 0, offset: 1 }),
           ])
-        )
-      ])
+        ),
+      ]),
     ]),
     trigger("subEventOpen", [
       transition("false => true", [
         animate(
           "700ms ease-in",
           keyframes([style({ opacity: 0 }), style({ opacity: 1 })])
-        )
-      ])
-    ])
-  ]
+        ),
+      ]),
+    ]),
+  ],
 })
 export class AppComponent implements OnInit {
   isRendering: boolean = false;
@@ -176,6 +185,43 @@ export class AppComponent implements OnInit {
 
   root: string = appRootPath.path;
 
+  BASE_FACILITY: string[] = [
+    "ATM",
+    "Bottle Deposit",
+    "Bus Shuttle",
+    "Charging Station",
+    "Cloakroom",
+    "DB",
+    "Disabled Toilet",
+    "Escalator Down",
+    "Escalator Up",
+    "Exit",
+    "Infoscout",
+    "Interpreter Service",
+    "Investigation Service",
+    "Medical Centre",
+    "Men's Toilet",
+    "Parking Lot",
+    "Parking Ticket",
+    "Prayer Room",
+    "Restaurant",
+    "Resting Area",
+    "S-Bahn",
+    "Security Office",
+    "Self-Service Restaurant",
+    "Service Centre East",
+    "Service Centre North",
+    "Shops & Services",
+    "Snack Point",
+    "Technical-Services",
+    "Telefone",
+    "Toilets",
+    "Tram",
+    "U-Bahn",
+    "Web Centre",
+    "Women's Toilet",
+  ];
+
   // 생성자
   constructor(
     private zone: NgZone,
@@ -191,17 +237,10 @@ export class AppComponent implements OnInit {
       }, 60000);
     });
 
-    // ratio의 width 비율이 1 미만일 경우
-    if (window.innerWidth / window.innerHeight < 1) {
-      this.deviceRatio = "vertical";
-    } else {
-      this.deviceRatio = "horizon";
-    }
-
     // signpost JSON 데이터가 정상적으로 로드 되었을 시
     // 이 데이터는 초기 1번, 인터넷이 연결되지 않았을 때 연결된다.
     this.event.putEvent<any>("loadData_SignpostLog"); // signpost json 데이터 불러오기
-    this.event.getEvent("loadData_SignpostLog").subscribe(err => {
+    this.event.getEvent("loadData_SignpostLog").subscribe((err) => {
       console.log("======= loadData_SignpostLog =======");
 
       // 데이터 갱신이 끝난 경우
@@ -225,13 +264,20 @@ export class AppComponent implements OnInit {
     this.layers.push(new Layer());
     this.layers.push(new Layer());
 
-    const css = "text-align:center; text-shadow: -1px -1px hsl(0,100%,50%); font-size: 40px;";
+    const css =
+      "text-align:center; text-shadow: -1px -1px hsl(0,100%,50%); font-size: 40px;";
     console.log("%cKoelnmesse\nWayfinding Signpost Start", css);
   }
 
-
   // 화면 InitView
   ngOnInit() {
+    // ratio의 width 비율이 1 미만일 경우
+    if (window.innerWidth / window.innerHeight < 1) {
+      this.deviceRatio = "vertical";
+    } else {
+      this.deviceRatio = "horizon";
+    }
+
     this.deviceLog = new Device();
     try {
       let sPageURL = window.location.search.substring(1);
@@ -266,30 +312,32 @@ export class AppComponent implements OnInit {
     this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 60af589449a3cd9c5cde4c91;
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
-    this.gateway.getAwait(LOCAL_WAS).then(json => {
-      console.log("getAwait result : ", json);
-      this.data.loadLocalWASJSON(json);
+    this.gateway
+      .getAwait(LOCAL_WAS)
+      .then((json) => {
+        console.log("getAwait result : ", json);
+        this.data.loadLocalWASJSON(json);
 
-      if (__IS_DEBUG__) {
-        this.data.startPuzzleData(readID, 1);
-      } else {
-        // 최초 서버와 통신.
-        // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
-        this.gateway.post("/device", this.deviceLog).subscribe(
-          (data) => {
-            console.log("SUCCESS Server Connection: ", data);
-            this.data.startPuzzleData(readID, data._body);
-          },
-          (error) => {
-            // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
-            console.log(error);
-            // this.data.startPuzzleData(readID, 2);
-            this.data.startPuzzleData(readID, "Failed Connect");
-          }
-        );
-      }
-    }).catch(
-      e => {
+        if (__IS_DEBUG__) {
+          this.data.startPuzzleData(readID, 1);
+        } else {
+          // 최초 서버와 통신.
+          // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
+          this.gateway.post("/device", this.deviceLog).subscribe(
+            (data) => {
+              console.log("SUCCESS Server Connection: ", data);
+              this.data.startPuzzleData(readID, data._body);
+            },
+            (error) => {
+              // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
+              console.log(error);
+              // this.data.startPuzzleData(readID, 2);
+              this.data.startPuzzleData(readID, "Failed Connect");
+            }
+          );
+        }
+      })
+      .catch((e) => {
         console.log("load awate Local WAS error : ", e);
 
         if (__IS_DEBUG__) {
@@ -310,10 +358,8 @@ export class AppComponent implements OnInit {
             }
           );
         }
-      }
-    );
+      });
   }
-
 
   // 리사이즈 시스템 Callback
   @HostListener("window:resize", ["$event"])
@@ -325,7 +371,6 @@ export class AppComponent implements OnInit {
       this.deviceRatio = "horizon";
     }
   }
-
 
   nextLogoOpen = true; // animation
   nextLayerOpen = true; // animation
@@ -356,14 +401,21 @@ export class AppComponent implements OnInit {
     }
   }
 
-
   // animation : Layer 변환
   anim_count = 0;
   animationDone($event) {
     this.anim_count++;
 
     // kinds: normal, 일반 fair, section, event
-    if (["Fair", "Fair-Closest", "Section", "Section-Closest", "Event-List"].includes(this.signpost.type)) {
+    if (
+      [
+        "Fair",
+        "Fair-Closest",
+        "Section",
+        "Section-Closest",
+        "Event-List",
+      ].includes(this.signpost.type)
+    ) {
       if (this.anim_count >= 2) {
         this.nextLayerOpen = false;
         this.cd.detectChanges();
@@ -372,15 +424,18 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds: Fair-Multiple, Section-Multiple
-    else if (["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)) {
-      const rollingCount = this.sectionMultipleSignpostArray.length;   // 루프되는 횟수
+    else if (
+      ["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)
+    ) {
+      const rollingCount = this.sectionMultipleSignpostArray.length; // 루프되는 횟수
       console.log("rollingCount : ", rollingCount);
       if (this.sectionMultipleRollingCount >= rollingCount) {
-          clearTimeout(this.sectionMultipleTimeout);
-          this.sectionMultipleTimeout = null;
-          return;
+        clearTimeout(this.sectionMultipleTimeout);
+        this.sectionMultipleTimeout = null;
+        return;
       }
-      this.signpost = this.sectionMultipleSignpostArray[this.sectionMultipleIndex];
+      this.signpost =
+        this.sectionMultipleSignpostArray[this.sectionMultipleIndex];
 
       if (this.signpost.type == "Section-Multiple") {
         this.logo_count = 0;
@@ -405,20 +460,25 @@ export class AppComponent implements OnInit {
       ) {
         this.signpost.color = "#ffffff";
         this.data.textColor = this.data.pictoColor = "#383838";
-      }
-      else {
+      } else {
         this.data.textColor = "#ffffff";
         this.data.pictoColor = this.signpost.color;
       }
 
-      console.log("multiple Rolling time : ",  this.maxRollingTime / this.sectionMultipleSignpostArray.length);
+      console.log(
+        "multiple Rolling time : ",
+        this.maxRollingTime / this.sectionMultipleSignpostArray.length
+      );
       if (this.equalSignpostNext) {
         if (this.sectionMultipleSignpostArray.length > 1) {
           this.sectionMultipleTimeout = setTimeout(() => {
             this.sectionMultipleIndex++;
             this.sectionMultipleRollingCount++;
             if (this.sectionMultipleRollingCount < rollingCount) {
-              if (this.sectionMultipleIndex >= this.sectionMultipleSignpostArray.length) {
+              if (
+                this.sectionMultipleIndex >=
+                this.sectionMultipleSignpostArray.length
+              ) {
                 this.sectionMultipleIndex = 0;
               }
               this.equalSignpostNext = false;
@@ -432,8 +492,9 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds: Overview Type
-    else if (["Fair-Overview", "Section-Overview"].includes(this.signpost.type)) {
-
+    else if (
+      ["Fair-Overview", "Section-Overview"].includes(this.signpost.type)
+    ) {
       // Detail 패널의 정보는 3개
       if (this.anim_count >= 3) {
         if (this.nextLayerOpen) {
@@ -453,21 +514,36 @@ export class AppComponent implements OnInit {
 
               // Section-Overview의 화살표 롤링에 따른...
               if (this.signpost.type == "Section-Overview") {
-                const next: Signpost | undefined = this.overviewSignposts[i - 3];
+                const next: Signpost | undefined =
+                  this.overviewSignposts[i - 3];
                 if (next != undefined && next.type == "Section-Overview") {
-                  if (this.overviewSignposts[i].layers[0].direction != next.layers[0].direction) {
+                  if (
+                    this.overviewSignposts[i].layers[0].direction !=
+                    next.layers[0].direction
+                  ) {
                     switch (layerIndex) {
-                      case 0: this.overview_section_next_layer1 = false; break;
-                      case 1: this.overview_section_next_layer2 = false; break;
-                      case 2: this.overview_section_next_layer3 = false; break;
+                      case 0:
+                        this.overview_section_next_layer1 = false;
+                        break;
+                      case 1:
+                        this.overview_section_next_layer2 = false;
+                        break;
+                      case 2:
+                        this.overview_section_next_layer3 = false;
+                        break;
                     }
                   }
-                }
-                else if (next == undefined && [0, 1, 2].includes(i)) {
+                } else if (next == undefined && [0, 1, 2].includes(i)) {
                   switch (layerIndex) {
-                    case 0: this.overview_section_next_layer1 = false; break;
-                    case 1: this.overview_section_next_layer2 = false; break;
-                    case 2: this.overview_section_next_layer3 = false; break;
+                    case 0:
+                      this.overview_section_next_layer1 = false;
+                      break;
+                    case 1:
+                      this.overview_section_next_layer2 = false;
+                      break;
+                    case 2:
+                      this.overview_section_next_layer3 = false;
+                      break;
                   }
                 }
               }
@@ -575,7 +651,9 @@ export class AppComponent implements OnInit {
         this.i2++;
       } else if (this.i2 === 0) {
         if (this._i2_counter !== -1) {
-          if (this._i2_counter < 2) { this._i2_counter++; }
+          if (this._i2_counter < 2) {
+            this._i2_counter++;
+          }
         }
 
         if (this._i2_counter === -1) {
@@ -652,13 +730,25 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds: normal, 일반 fair, section, event
-    if (["Fair", "Fair-Closest", "Section", "Section-Closest", "Event-List"].includes(this.signpost.type)) {
+    if (
+      [
+        "Fair",
+        "Fair-Closest",
+        "Section",
+        "Section-Closest",
+        "Event-List",
+      ].includes(this.signpost.type)
+    ) {
       let logoTime = 1;
 
       // 로고의 개수를 구한다.
       try {
-        logoTime = this.signpost.layers[0].logos.length > 1 ? this.maxRollingTime / 2 :
-          this.signpost.layers[0].logos.length === 1 ? this.maxRollingTime : -1;
+        logoTime =
+          this.signpost.layers[0].logos.length > 1
+            ? this.maxRollingTime / 2
+            : this.signpost.layers[0].logos.length === 1
+            ? this.maxRollingTime
+            : -1;
       } catch {
         logoTime = -1;
       }
@@ -692,8 +782,9 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds: Multiple Type
-    else if (["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)) {
-
+    else if (
+      ["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)
+    ) {
       // 색버그 수정
       if (
         this.signpost.color === undefined ||
@@ -706,27 +797,32 @@ export class AppComponent implements OnInit {
       ) {
         this.signpost.color = "#ffffff";
         this.data.textColor = this.data.pictoColor = "#383838";
-      }
-      else {
+      } else {
         this.data.textColor = "#ffffff";
         this.data.pictoColor = this.signpost.color;
       }
 
-      const rollingCount = 3;       // 루프되는 횟수
+      const rollingCount = 3; // 루프되는 횟수
       this.sectionMultipleIndex = 0;
       this.sectionMultipleRollingCount = 0;
 
       // Section-Multiple을 위한 배열을 구성한다.
       this.sectionMultipleSignpostArray = [];
       this.sectionMultipleSignpostArray.push(this.signpost);
-      this.sectionMultipleSignpostArray = this.sectionMultipleSignpostArray.concat(this.data.previewSignpost(rollingCount - 1, this.signpost.type));
+      this.sectionMultipleSignpostArray =
+        this.sectionMultipleSignpostArray.concat(
+          this.data.previewSignpost(rollingCount - 1, this.signpost.type)
+        );
 
       if (this.signpost.type == "Section-Multiple") {
         this.logo_count = 0;
         this.logoURL = this.signpost.layers[0].logos[this.logo_count];
       }
 
-      console.log("sectionMultipleSignpostArray : ", this.sectionMultipleSignpostArray.length);
+      console.log(
+        "sectionMultipleSignpostArray : ",
+        this.sectionMultipleSignpostArray.length
+      );
 
       // if(this.sectionMultipleSignpostArray.length <= 0)
 
@@ -736,13 +832,16 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds : Overview Type
-    else if (["Fair-Overview", "Section-Overview"].includes(this.signpost.type)) {
-
+    else if (
+      ["Fair-Overview", "Section-Overview"].includes(this.signpost.type)
+    ) {
       // 모든 Overview 객체를 다 불러온다.
       this.index = 0;
       this.overviewIndex = 0;
 
-      const t: "Fair-Overview" | "Section-Overview" = this.signpost.type as "Fair-Overview" | "Section-Overview";
+      const t: "Fair-Overview" | "Section-Overview" = this.signpost.type as
+        | "Fair-Overview"
+        | "Section-Overview";
       this.overviewSignposts = this.data.overviewSignpost(t);
       this.signpost = Object.assign(this.overviewSignposts[0]);
       this.overviewSignposts = this.overviewSignposts.slice(1);
@@ -764,12 +863,17 @@ export class AppComponent implements OnInit {
           emptySignpost.layers = [];
           emptySignpost.layers.push(emptyLayer);
 
-          const repeatEmptyLength: number = (3 - (this.overviewSignposts.length % 3) == 3) ? 0 : 3 - (this.overviewSignposts.length % 3);
+          const repeatEmptyLength: number =
+            3 - (this.overviewSignposts.length % 3) == 3
+              ? 0
+              : 3 - (this.overviewSignposts.length % 3);
           for (let i = 0; i < repeatEmptyLength; i++) {
             this.overviewSignposts.push(emptySignpost);
           }
           const r: number = this.overviewSignposts.length < 4 ? 2 : 1;
-          this.overviewSignposts = this.overviewSignposts.concat(this.data.overviewSignpost(t, r).slice(1));
+          this.overviewSignposts = this.overviewSignposts.concat(
+            this.data.overviewSignpost(t, r).slice(1)
+          );
         }
       }
 
@@ -781,9 +885,12 @@ export class AppComponent implements OnInit {
 
       // 로고의 개수를 구한다.
       try {
-        logoTime = this.signpost.layers[0].logos.length > 1
-            ? this.maxRollingTime / 2 : this.signpost.layers[0].logos.length == 1
-            ? this.maxRollingTime : -1;
+        logoTime =
+          this.signpost.layers[0].logos.length > 1
+            ? this.maxRollingTime / 2
+            : this.signpost.layers[0].logos.length == 1
+            ? this.maxRollingTime
+            : -1;
       } catch {
         logoTime = -1;
       }
@@ -799,30 +906,29 @@ export class AppComponent implements OnInit {
             if (this.logo_count >= 2) {
               this.logo_count = 0;
               return;
-            }
-            else {
+            } else {
               this.logo_count++;
             }
             this.nextLogoOpen = true;
             this.cd.detectChanges();
           }, logoTime);
         }
-      }
-      else {
+      } else {
         this.logoURL = "-1";
       }
 
-      let cnt = 0;              // 루프되는 횟수
+      let cnt = 0; // 루프되는 횟수
       let detailLayerTime: number = this.maxRollingTime; // 한 detail 파트 내부에서 나눠 돌릴 롤링 타임(ms)
       if (this.overviewSignposts.length < 3) {
         detailLayerTime = this.maxRollingTime;
-      }
-      else if (this.overviewSignposts.length % 3 === 0) {
-        detailLayerTime = this.maxRollingTime / (this.overviewSignposts.length / 3);
+      } else if (this.overviewSignposts.length % 3 === 0) {
+        detailLayerTime =
+          this.maxRollingTime / (this.overviewSignposts.length / 3);
         cnt = Math.floor(this.overviewSignposts.length / 3);
-      }
-      else {
-        detailLayerTime = this.maxRollingTime / (Math.floor(this.overviewSignposts.length / 3) + 1);
+      } else {
+        detailLayerTime =
+          this.maxRollingTime /
+          (Math.floor(this.overviewSignposts.length / 3) + 1);
         cnt = Math.floor(this.overviewSignposts.length / 3 + 1);
       }
 
@@ -851,38 +957,59 @@ export class AppComponent implements OnInit {
             return;
           }
 
-          if (this.signpost.type == "Section-Overview" && this.deviceRatio == "horizon") {
-
+          if (
+            this.signpost.type == "Section-Overview" &&
+            this.deviceRatio == "horizon"
+          ) {
             // 다음 오픈할지 계산
             let length: number = this.overviewIndex + 3;
             let layerIndex: number = 0;
             for (let i = this.overviewIndex; i < length; i++) {
               if (this.overviewSignposts[i] != undefined) {
-
                 // Section-Overview의 화살표 롤링에 따른...
-                const next: Signpost | undefined = this.overviewSignposts[i - 3];
+                const next: Signpost | undefined =
+                  this.overviewSignposts[i - 3];
                 if (next != undefined && next.type == "Section-Overview") {
-                  if (this.overviewSignposts[i].layers[0].direction != next.layers[0].direction) {
+                  if (
+                    this.overviewSignposts[i].layers[0].direction !=
+                    next.layers[0].direction
+                  ) {
                     switch (layerIndex) {
-                      case 0: this.overview_section_next_layer1 = true; break;
-                      case 1: this.overview_section_next_layer2 = true; break;
-                      case 2: this.overview_section_next_layer3 = true; break;
+                      case 0:
+                        this.overview_section_next_layer1 = true;
+                        break;
+                      case 1:
+                        this.overview_section_next_layer2 = true;
+                        break;
+                      case 2:
+                        this.overview_section_next_layer3 = true;
+                        break;
                     }
                   }
-                }
-                else if (next == undefined && [0, 1, 2].includes(i)) {
+                } else if (next == undefined && [0, 1, 2].includes(i)) {
                   switch (layerIndex) {
-                    case 0: this.overview_section_next_layer1 = true; break;
-                    case 1: this.overview_section_next_layer2 = true; break;
-                    case 2: this.overview_section_next_layer3 = true; break;
+                    case 0:
+                      this.overview_section_next_layer1 = true;
+                      break;
+                    case 1:
+                      this.overview_section_next_layer2 = true;
+                      break;
+                    case 2:
+                      this.overview_section_next_layer3 = true;
+                      break;
                   }
                 }
-              }
-              else {
+              } else {
                 switch (layerIndex) {
-                  case 0: this.overview_section_next_layer1 = true; break;
-                  case 1: this.overview_section_next_layer2 = true; break;
-                  case 2: this.overview_section_next_layer3 = true; break;
+                  case 0:
+                    this.overview_section_next_layer1 = true;
+                    break;
+                  case 1:
+                    this.overview_section_next_layer2 = true;
+                    break;
+                  case 2:
+                    this.overview_section_next_layer3 = true;
+                    break;
                 }
               }
               layerIndex++;
@@ -895,9 +1022,7 @@ export class AppComponent implements OnInit {
       }
       this.nextLayerOpen = true;
       this.cd.detectChanges();
-    }
-
-    else {
+    } else {
       let cnt = 0; // 루프되는 횟수
       this.index = 0; // 돌아가고 있는 현재 횟수
 
@@ -905,7 +1030,6 @@ export class AppComponent implements OnInit {
 
       // 이벤트 리스트의 경우 한정
       if (this.signpost.type.match("Event-List")) {
-
         // 가로 모드일 경우
         if (this.deviceRatio.match("horizon")) {
           // if (this.signpost.title.length > 14) {
@@ -975,10 +1099,12 @@ export class AppComponent implements OnInit {
         this.nextLayerOpen = true;
         this.cd.detectChanges();
         console.log("this.nextLayerOpen : ", this.nextLayerOpen);
-      }
-      else {
+      } else {
         // only facility detail container
-        if (this.signpost.type.match("Facility") || this.signpost.type.match("Event")) {
+        if (
+          this.signpost.type.match("Facility") ||
+          this.signpost.type.match("Event")
+        ) {
           const layer: Layer[] = this.data.nextLayer();
           for (let i = 0; i < 3; i++) {
             this.layers[i] = layer[i];
@@ -1004,7 +1130,7 @@ export class AppComponent implements OnInit {
           this.langDescOpen2 = this.layers[1].isNextLang();
           this.langDescOpen3 = this.layers[2].isNextLang();
           this.cd.detectChanges();
-        }, this.maxRollingTime / 2);  // 이제 인덱싱 형태로 바뀌었다
+        }, this.maxRollingTime / 2); // 이제 인덱싱 형태로 바뀌었다
       }
     }
   }
@@ -1052,39 +1178,47 @@ export class AppComponent implements OnInit {
     if (this.isRendering) {
       let detail: string = "dark";
       if (type != undefined) {
-        detail = (type == "normal") ? "dark" : "light";
+        detail = type == "normal" ? "dark" : "light";
       }
 
-      const path: string = `${this.gateway.serverIP}/static/facility/${detail}/${image}.svg`;
+      let path: string = "";
+      if (this.BASE_FACILITY.includes(image)) {
+        path = `./assets/facility/${detail}/${image}.svg`;
+      } else {
+        path = `${this.gateway.serverIP}/static/facility/${detail}/${image}.svg`;
+      }
       return path;
     }
   }
-
 
   // 디폴트 이미지 경로 추출
   defaultTemplatePath(type: "169" | "89") {
     if (this.isRendering) {
       if (this.deviceLog.fair && this.deviceLog.fair != "") {
-        return `${this.gateway.serverIP}/static/${this.deviceLog.fair}/signpost/${(type == "169") ? "169.png" : "89.png"}?p=${this.cacheReboot}`;
-      }
-      else {
-        // return `${this.gateway.serverIP}/static/signpost/${(type == "169") ? "169.png" : "89.png"} | safe: 'url'`;
-        return `${(type == "169") ? "./assets/default/169.png" : "./assets/default/89.png"}`;
+        return `${this.gateway.serverIP}/static/${
+          this.deviceLog.fair
+        }/signpost/${type == "169" ? "169.png" : "89.png"}?p=${
+          this.cacheReboot
+        }`;
+      } else {
+        return `${this.gateway.serverIP}/static/signpost/${
+          type == "169" ? "169.png" : "89.png"
+        } | safe: 'url'`;
+        // return `${(type == "169") ? "./assets/default/169.png" : "./assets/default/89.png"}`;
       }
     }
   }
-
 
   // 디폴트 템플릿 이미지를 검출하지 못했을 경우 기본 이미지를 출력
   defaultTemplatePathError(event, type: "169" | "89") {
     if (type == "169") {
       event.target.src = `${this.root}/assets/default/169.png`;
-    }
-    else {
+      // event.target.src = `${this.gateway.serverIP}/static/signpost/${(type == "169") ? "169.png" : "89.png"} | safe: 'url'`;
+    } else {
       event.target.src = `${this.root}/assets/default/89.png`;
+      // event.target.src = `${this.gateway.serverIP}/static/signpost/${(type == "89") ? "169.png" : "89.png"} | safe: 'url'`;
     }
   }
-
 
   imgLoadComplate = false;
   _2rdLogoLogicStart = false;
@@ -1097,8 +1231,7 @@ export class AppComponent implements OnInit {
 
     try {
       clearTimeout(this.imgLoadCheckTimer);
-    } catch (e) {
-    }
+    } catch (e) {}
     this.cd.detectChanges();
   }
 
@@ -1115,7 +1248,6 @@ export class AppComponent implements OnInit {
     this.imgLoadComplate = false;
     this._2rdLogoLogicStart = true;
     this.imgLoadCheckTimer = setTimeout(() => {
-
       // 아직도 로드가 안 되었을 경우
       if (!this.imgLoadComplate) {
         // this._2rdLogoLogicStart = false;

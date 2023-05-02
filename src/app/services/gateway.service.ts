@@ -33,7 +33,7 @@ export class GatewayService {
   }
 
   // timeout
-  private _timeout: number = 4000;
+  private _timeout: number = 3000;
   public get timeout() { return this._timeout; }
   public set timeout(t: number) { this._timeout = t; }
 

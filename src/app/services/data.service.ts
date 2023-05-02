@@ -39,9 +39,11 @@ class SignpostPack {
 
   // 레이어의 개수
   length(): number {
-
     // layer가 1개, facility list가 포함되지 않는 경우
-    if (this.signpost.type.match("Facility") || this.signpost.type.match("Event")) {
+    if (
+      this.signpost.type.match("Facility") ||
+      this.signpost.type.match("Event")
+    ) {
       // 메인 layer를 제외한 모든 layer 개수
       return this.signpost.layers.length - 1;
     }
@@ -55,11 +57,9 @@ class SignpostPack {
   }
 }
 
-
 // Desc: 데이터를 관리하는
 @Injectable()
 export class DataService {
-
   signpostPacks: SignpostPack[] = [];
   signpostIndex: number = -1;
   root: string = appRootPath.path;
@@ -70,8 +70,7 @@ export class DataService {
 
   readonly OVERVIEW_VERTICAL_ASPECTRATIO: number = 0.89;
 
-  constructor(private gateway: GatewayService, private event: EventService) {
-  }
+  constructor(private gateway: GatewayService, private event: EventService) {}
 
   // Desc: AppComponent가 Hide가 된 순간 받았던 데이터를 퍼즐화 시킨다.
   startPuzzleData(readID: string, data?: any) {
@@ -97,7 +96,12 @@ export class DataService {
     }
 
     // 인터넷은 연결 되었으나 받은 데이터가 없는 경우
-    else if (data === undefined || data === null || data === [] || data === "") {
+    else if (
+      data === undefined ||
+      data === null ||
+      (Array.isArray(data) && data.length <= 0) ||
+      data === ""
+    ) {
       console.log("Server Connect, but no data. Local Storage Mode");
       this.creation(this.gateway.callLocalStorage(read_Log));
     }
@@ -109,7 +113,6 @@ export class DataService {
     }
   }
 
-
   // 다음 signpost 계산하여 넘기기
   nextSignpost(isInit?: boolean): Signpost {
     if (this.signpostPacks == undefined || this.signpostPacks.length == 0) {
@@ -117,7 +120,10 @@ export class DataService {
     }
 
     // this.signpostIndex++;
-    if (this.signpostPacks.length <= this.signpostIndex || this.signpostIndex < 0) {
+    if (
+      this.signpostPacks.length <= this.signpostIndex ||
+      this.signpostIndex < 0
+    ) {
       this.signpostIndex = 0;
     }
     let signpost: Signpost = this.signpostPacks[this.signpostIndex].signpost;
@@ -125,7 +131,15 @@ export class DataService {
 
     this.textColor = "#ffffff";
     this.pictoColor = signpost.color;
-    if (signpost.color === undefined || signpost.color === "" || signpost.color === "#FFFFFF" || signpost.color === "#FFF" || signpost.color === "#ffffff" || signpost.color === "white" || signpost.color === "#fff") {
+    if (
+      signpost.color === undefined ||
+      signpost.color === "" ||
+      signpost.color === "#FFFFFF" ||
+      signpost.color === "#FFF" ||
+      signpost.color === "#ffffff" ||
+      signpost.color === "white" ||
+      signpost.color === "#fff"
+    ) {
       // signpost.color = "#54B948";
       signpost.color = "#ffffff";
       this.textColor = this.pictoColor = "#383838";
@@ -133,7 +147,6 @@ export class DataService {
 
     // 타입이 이벤트일 경우
     if (signpost.type.match("Event")) {
-
       const nowHour = new Date().getHours();
       const nowMinute = new Date().getMinutes();
 
@@ -142,8 +155,13 @@ export class DataService {
       for (let i = 1; i < signpost.layers.length; i++) {
         let event: Layer = Object.assign(signpost.layers[i]);
 
-        let puzzle1: string = event.context.substring(0, event.context.indexOf("~"));
-        let puzzle2: string = event.context.substring(event.context.indexOf("~"));
+        let puzzle1: string = event.context.substring(
+          0,
+          event.context.indexOf("~")
+        );
+        let puzzle2: string = event.context.substring(
+          event.context.indexOf("~")
+        );
 
         puzzle1 = puzzle1.replace(" ", "");
         puzzle1 = puzzle1.replace("~", "");
@@ -151,12 +169,16 @@ export class DataService {
         puzzle2 = puzzle2.replace("~", "");
 
         const starter: Date = new Date();
-        starter.setHours(parseInt(puzzle1.substring(0, puzzle1.indexOf(":"))),
-          parseInt(puzzle1.substring(puzzle1.indexOf(":") + 1)));
+        starter.setHours(
+          parseInt(puzzle1.substring(0, puzzle1.indexOf(":"))),
+          parseInt(puzzle1.substring(puzzle1.indexOf(":") + 1))
+        );
 
         const ender: Date = new Date();
-        ender.setHours(parseInt(puzzle2.substring(0, puzzle2.indexOf(":"))),
-          parseInt(puzzle2.substring(puzzle2.indexOf(":") + 1)));
+        ender.setHours(
+          parseInt(puzzle2.substring(0, puzzle2.indexOf(":"))),
+          parseInt(puzzle2.substring(puzzle2.indexOf(":") + 1))
+        );
 
         const now: Date = new Date();
         now.setHours(nowHour, nowMinute);
@@ -173,19 +195,21 @@ export class DataService {
     return signpost;
   }
 
-
   /**
    * Preview Signpost, 다음 Signpost가 어떤 친구인지 알아본다.
    *   1. 이 작업은 실제 인덱스 조작 없이 현재 인덱스 기준에서 length 길이만큼 반환되며 총 Signpost 길이를 넘어설 경우 0번부터 반환한다.
    *   2. Signpost 길이가 0개면 빈 배열을 반환, 그 이외는 최대 3개를 반환한다.
    * @param length 반환할 Signpost 개수
    */
-  public previewSignpost(length: number = 1, type: string = "default"): Signpost[] {
+  public previewSignpost(
+    length: number = 1,
+    type: string = "default"
+  ): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     // type이 Fair-Multiple 이거나 Section-Multiple일 경우
     if (type == "Fair-Multiple" || type == "Section-Multiple") {
-      const lens: number = (length >= 2) ? 2 : (length <= 0) ? 1 : length;
+      const lens: number = length >= 2 ? 2 : length <= 0 ? 1 : length;
       console.log("lens : ", lens);
 
       let signposts: Signpost[] = [];
@@ -193,22 +217,21 @@ export class DataService {
 
       // lens 크기만큼 반복(MAX == 2)
       for (let i = 0; i < lens; i++) {
-          nowSignpostIndex++;
-          if (this.signpostPacks.length <= nowSignpostIndex) {
-            nowSignpostIndex = -1;
-            break;
+        nowSignpostIndex++;
+        if (this.signpostPacks.length <= nowSignpostIndex) {
+          nowSignpostIndex = -1;
+          break;
+        }
+        const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
+        if (s.type == type) {
+          signposts.push(s);
+        } else {
+          nowSignpostIndex--;
+          if (nowSignpostIndex < 0) {
+            nowSignpostIndex = this.signpostPacks.length - 1;
           }
-          const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
-          if (s.type == type) {
-            signposts.push(s);
-          }
-          else {
-            nowSignpostIndex--;
-            if (nowSignpostIndex < 0) {
-              nowSignpostIndex = this.signpostPacks.length - 1;
-            }
-            break;
-          }
+          break;
+        }
       }
       this.gateway.saveLocalstorage(readWriteID, nowSignpostIndex + 1);
       return signposts;
@@ -216,7 +239,7 @@ export class DataService {
 
     // 그 외 나머지
     else {
-      const lens: number = (length >= 3) ? 3 : (length <= 0) ? 1 : length;
+      const lens: number = length >= 3 ? 3 : length <= 0 ? 1 : length;
       console.log("lens : ", lens);
 
       let signposts: Signpost[] = [];
@@ -224,30 +247,29 @@ export class DataService {
 
       // lens 크기만큼 반복(MAX == 3)
       for (let i = 0; i < lens; i++) {
-          nowSignpostIndex++;
-          if (this.signpostPacks.length <= nowSignpostIndex) {
-            nowSignpostIndex = 0;
-          }
-          const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
+        nowSignpostIndex++;
+        if (this.signpostPacks.length <= nowSignpostIndex) {
+          nowSignpostIndex = 0;
+        }
+        const s: Signpost = this.signpostPacks[nowSignpostIndex].signpost;
 
-          // 색버그 수정
-          if (
-            s.color === undefined ||
-            s.color === "" ||
-            s.color === "#FFFFFF" ||
-            s.color === "#FFF" ||
-            s.color === "#ffffff" ||
-            s.color === "white" ||
-            s.color === "#fff"
-          ) {
-            s.color = "#ffffff";
-            this.textColor = this.pictoColor = "#383838";
-          }
-          else {
-            this.textColor = "#ffffff";
-            this.pictoColor = s.color;
-          }
-          signposts.push(s);
+        // 색버그 수정
+        if (
+          s.color === undefined ||
+          s.color === "" ||
+          s.color === "#FFFFFF" ||
+          s.color === "#FFF" ||
+          s.color === "#ffffff" ||
+          s.color === "white" ||
+          s.color === "#fff"
+        ) {
+          s.color = "#ffffff";
+          this.textColor = this.pictoColor = "#383838";
+        } else {
+          this.textColor = "#ffffff";
+          this.pictoColor = s.color;
+        }
+        signposts.push(s);
       }
       this.signpostIndex = this.signpostIndex + (lens - 1);
 
@@ -255,11 +277,13 @@ export class DataService {
     }
   }
 
-
   /**
    * 해당 타입의 Overview를 전부 불러온다.
    */
-  public overviewSignpost(type: "Fair-Overview" | "Section-Overview", r: number = 3): Signpost[] {
+  public overviewSignpost(
+    type: "Fair-Overview" | "Section-Overview",
+    r: number = 3
+  ): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     let allSignposts: Signpost[] = [];
@@ -311,13 +335,10 @@ export class DataService {
         return (
           a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
             numeric: true,
-          })
-          ||
-          a.layers[0].direction - b.layers[0].direction
+          }) || a.layers[0].direction - b.layers[0].direction
         );
       });
-    }
-    else {
+    } else {
       signposts = signposts.sort((a: Signpost, b: Signpost): number => {
         const res: number = a.layers[0].destName.localeCompare(
           b.layers[0].destName,
@@ -370,7 +391,6 @@ export class DataService {
 
     // [Fair-Overview일 경우 조금 특별한 작업을 시작한다.]
     if (type == "Fair-Overview") {
-
       // 만약 비율이 8:9가 아닐 경우 특수 처리를 진행한다.
       if (aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO) {
         fair_overview_special = true;
@@ -398,9 +418,10 @@ export class DataService {
         for (const key of map.keys()) {
           let combineSignpost: Signpost[] = map.get(key);
           if (combineSignpost.length > maxDirection) {
-
-            const ceil: number = (combineSignpost.length % maxDirection) != 0 ? 1 : 0;
-            const div: number = Math.floor(combineSignpost.length / maxDirection) + ceil;
+            const ceil: number =
+              combineSignpost.length % maxDirection != 0 ? 1 : 0;
+            const div: number =
+              Math.floor(combineSignpost.length / maxDirection) + ceil;
             // console.log("ceil : ", ceil);
             // console.log("Math.floor(combineSignpost.length / maxDirection) : ", Math.floor(combineSignpost.length / maxDirection));
             // console.log("div : ", div);
@@ -421,17 +442,17 @@ export class DataService {
 
                 if (destname == "") {
                   destname = combineSignpost[n].layers[0].destName;
-                }
-                else {
-                  destname += ("\u00A0\u00A0\u00A0" + combineSignpost[n].layers[0].destName);
+                } else {
+                  destname +=
+                    "\u00A0\u00A0\u00A0" +
+                    combineSignpost[n].layers[0].destName;
                 }
               }
               layer.destName = destname;
               newSignpost.layers.push(layer);
               firstSignpost.push(newSignpost);
             }
-          }
-          else {
+          } else {
             let newSignpost: Signpost = new Signpost(undefined);
             newSignpost.type = type;
 
@@ -442,9 +463,8 @@ export class DataService {
             for (const combine of combineSignpost) {
               if (destname == "") {
                 destname = combine.layers[0].destName;
-              }
-              else {
-                destname += ("\u00A0\u00A0\u00A0" + combine.layers[0].destName);
+              } else {
+                destname += "\u00A0\u00A0\u00A0" + combine.layers[0].destName;
               }
             }
             layer.destName = destname;
@@ -458,8 +478,8 @@ export class DataService {
     }
     lastIndex = initIndex + signposts.length;
 
-    const overviewSize: number = signposts.length;    // overview 템플릿의 최대 개수
-    const maxLayerSize: number = r * 3;               // 최대 출력할 개수
+    const overviewSize: number = signposts.length; // overview 템플릿의 최대 개수
+    const maxLayerSize: number = r * 3; // 최대 출력할 개수
 
     // console.log(" > 현재 인덱스 : ", this.signpostIndex);
     // console.log(" > overview 초기 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 첫번째 : ", initIndex);
@@ -491,7 +511,10 @@ export class DataService {
         }
 
         // 이놈의 경우 가공 데이터이므로 상관 없다.
-        if (signposts[i].layers[0].destName == undefined || signposts[i].layers[0].destName == "") {
+        if (
+          signposts[i].layers[0].destName == undefined ||
+          signposts[i].layers[0].destName == ""
+        ) {
           repeat++;
           continue;
         }
@@ -500,10 +523,9 @@ export class DataService {
           returnSignpost.push(signposts[i]);
         }
       }
-      this.signpostIndex += (fair_overview_backupSignpost.length - 1);
+      this.signpostIndex += fair_overview_backupSignpost.length - 1;
       this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
-    }
-    else {
+    } else {
       for (let i = 0; i < repeat; i++) {
         const nowIndex: number = i + start;
         if (allSignposts[nowIndex] == undefined) {
@@ -512,11 +534,18 @@ export class DataService {
 
         // 초기 0번 개체만 아니면 추가한다.
         if (initIndex != nowIndex) {
-
           // 만약 destname이 비어 있다면 생략한다.
           // 아래 조건은 16:9 비율의 Section-Overview 타입 외에 destName이름이 ""로 들어오는 값을 넘긴다는 뜻.
-          if (!(type == "Section-Overview" && aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO)) {
-            if (allSignposts[nowIndex].layers[0].destName == undefined || allSignposts[nowIndex].layers[0].destName == "") {
+          if (
+            !(
+              type == "Section-Overview" &&
+              aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO
+            )
+          ) {
+            if (
+              allSignposts[nowIndex].layers[0].destName == undefined ||
+              allSignposts[nowIndex].layers[0].destName == ""
+            ) {
               repeat++;
               continue;
             }
@@ -528,12 +557,11 @@ export class DataService {
           }
         }
       }
-      this.signpostIndex += (repeat - 1);
+      this.signpostIndex += repeat - 1;
 
       if (this.signpostIndex >= lastIndex) {
         this.gateway.saveLocalstorage(readWriteID, this.signpostIndex);
-      }
-      else {
+      } else {
         this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
       }
     }
@@ -542,7 +570,6 @@ export class DataService {
     console.log(" > [마무리] 가공 후 signpost : ", returnSignpost);
     return returnSignpost;
   }
-
 
   /**
    * 아무 짓도 안 하고 다음 overview 친구가 계속 overview인지 검사
@@ -559,8 +586,7 @@ export class DataService {
       }
     }
     return true;
-  }
-
+  };
 
   // 레이아웃 재설정 및 마지막인지 검사
   nextLayer(): Layer[] {
@@ -582,8 +608,14 @@ export class DataService {
     if (this.pack().signpost.type.match("Event")) {
       let eventIdx = this.eventIndex();
       for (let i = 1; i <= 3; i++) {
-        let layer: Layer = this.pack().signpost.layers[(i + (eventIdx * 3)) === 0 ? 1 : i + (eventIdx * 3)];
-        console.log("(i + (eventIdx * 3)) === 0 ? 1 : i + (eventIdx * 3) : ", (i + (eventIdx * 3)) === 0 ? 1 : i + (eventIdx * 3));
+        let layer: Layer =
+          this.pack().signpost.layers[
+            i + eventIdx * 3 === 0 ? 1 : i + eventIdx * 3
+          ];
+        console.log(
+          "(i + (eventIdx * 3)) === 0 ? 1 : i + (eventIdx * 3) : ",
+          i + eventIdx * 3 === 0 ? 1 : i + eventIdx * 3
+        );
         if (layer == undefined) {
           if (i === 1) {
             console.log("초기화");
@@ -594,19 +626,16 @@ export class DataService {
         }
         layers.push(layer);
       }
-
     } else {
-
       while (true) {
         let layer = this.pack().next();
         console.log("layer : ", layer);
         if (layer == undefined) {
-
           if (c == 0) {
             this.pack().idxInit();
             continue;
           } else {
-            for (let i = (layers.length); i < 3; i++) {
+            for (let i = layers.length; i < 3; i++) {
               layers.push(new Layer());
             }
             return layers;
@@ -616,14 +645,15 @@ export class DataService {
         c++;
 
         // 3개의 레이어만 허용
-        if (c >= 3) { break; }
+        if (c >= 3) {
+          break;
+        }
       }
     }
 
     console.log("result Layer : ", layers);
     return layers;
   }
-
 
   // 레이어 개수
   layersCount(): number {
@@ -636,7 +666,7 @@ export class DataService {
       } else {
         index++;
         if (layerLength / ((index + 1) * 3) < 1) {
-          return (layerLength % 3);
+          return layerLength % 3;
         } else {
           return 3;
         }
@@ -645,21 +675,20 @@ export class DataService {
     return this.pack().length();
   }
 
-
   layerInit() {
     this.pack().idxInit();
   }
-
 
   // 현재 signpost 패키지
   private pack(): SignpostPack {
     return this.signpostPacks[this.signpostIndex];
   }
 
-
   // signpostIndex를 불러온다.
   loadSignpostIndexKey() {
-    let index: string = this.gateway.callLocalStorage(`${SIGNPOST_INDEX}_${this.readID}`);
+    let index: string = this.gateway.callLocalStorage(
+      `${SIGNPOST_INDEX}_${this.readID}`
+    );
     let nowIndex: number = 0;
     if (index == undefined || index == null) {
       nowIndex = 0;
@@ -667,8 +696,7 @@ export class DataService {
       nowIndex = parseInt(index);
       if (isNaN(nowIndex)) {
         nowIndex = 0;
-      }
-      else if (nowIndex >= Number.MAX_SAFE_INTEGER) {
+      } else if (nowIndex >= Number.MAX_SAFE_INTEGER) {
         nowIndex = 0;
       }
     }
@@ -677,9 +705,11 @@ export class DataService {
     if (isNaN(this.signpostIndex)) {
       this.signpostIndex = 0;
     }
-    this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, nowIndex + 1);
+    this.gateway.saveLocalstorage(
+      `${SIGNPOST_INDEX}_${this.readID}`,
+      nowIndex + 1
+    );
   }
-
 
   logoKeyValue: Map<string, string>;
   loadLocalWASJSON(json) {
@@ -693,7 +723,6 @@ export class DataService {
       this.logoKeyValue.set(jsonData[i].Key, jsonData[i].Value);
     }
   }
-
 
   // 데이터 시작
   creation(data) {
@@ -733,7 +762,12 @@ export class DataService {
 
       // 1018 추가로직. default가 2개 이상일 경우 예외 처리
       for (let i = 0; i < signpost.length; i++) {
-        if (signpost[i].type === undefined || signpost[i].type === null || signpost[i].type === "" || signpost[i].type === "default" ) {
+        if (
+          signpost[i].type === undefined ||
+          signpost[i].type === null ||
+          signpost[i].type === "" ||
+          signpost[i].type === "default"
+        ) {
           let defaultSignpost: Signpost = new Signpost(undefined);
           defaultSignpost.type = "default";
           signpost[i] = defaultSignpost;
@@ -742,10 +776,8 @@ export class DataService {
 
       // destination의 특수 문자 제거
       for (let i = 0; i < signpost.length; i++) {
-
         // 레이어가 비어있지 않을 경우 한정
         if (signpost[i].layers != undefined) {
-
           for (let j = 0; j < signpost[i].layers.length; j++) {
             let dest: string = signpost[i].layers[j].destName;
             if (dest === null || dest === undefined) {
@@ -753,19 +785,25 @@ export class DataService {
             }
             signpost[i].layers[j].destName = dest;
           }
-
         }
       }
 
       // 새로운 signpost일 경우
-      if (this.gateway.callLocalStorage(`${SIGNPOST_LOG}_${this.readID}`) != JSON.stringify(signpost)) {
-        const css = "text-align:right; text-shadow: -1px -1px hsl(20%,76%,50%); font-size: 20px;";
+      if (
+        this.gateway.callLocalStorage(`${SIGNPOST_LOG}_${this.readID}`) !=
+        JSON.stringify(signpost)
+      ) {
+        const css =
+          "text-align:right; text-shadow: -1px -1px hsl(20%,76%,50%); font-size: 20px;";
         console.log("%cNEW SIGNPOST GET", css);
 
         // 인덱스 초기화
         this.gateway.saveLocalstorage(`${EVENT_INDEX}_${this.readID}`, -1);
         this.gateway.saveLocalstorage(`${SIGNPOST_INDEX}_${this.readID}`, 0);
-        this.gateway.saveLocalstorage(`${SIGNPOST_LOG}_${this.readID}`, JSON.stringify(signpost));
+        this.gateway.saveLocalstorage(
+          `${SIGNPOST_LOG}_${this.readID}`,
+          JSON.stringify(signpost)
+        );
       }
     }
 
@@ -774,9 +812,12 @@ export class DataService {
     if (signpost != undefined || signpost != null || signpost.length >= 1) {
       try {
         for (let s of signpost) {
-          if (s.layers.length <= 0 || s.type == "default" || s.type == "super-default") {
-          }
-          else {
+          if (
+            s.layers.length <= 0 ||
+            s.type == "default" ||
+            s.type == "super-default"
+          ) {
+          } else {
             s.layers[0].destName = this.convertDestName(s.layers[0].destName);
           }
           this.signpostPacks.push(new SignpostPack(Object.assign(s)));
@@ -785,8 +826,7 @@ export class DataService {
         // 배열이 아닌 경우 아래 로직으로 체크
         let dest: string = signpost.layers[0].destName;
         if (dest === null || dest === undefined) {
-        }
-        else {
+        } else {
           dest = this.convertDestName(dest);
         }
         signpost.layers[0].destName = dest;
@@ -804,15 +844,13 @@ export class DataService {
     this.sortMultipleType("Section-Multiple");
   }
 
-
   // nxClient에서 로고의 패스를 긁어온다.
   // 이 방법으로는 local의 samsungSDS/NxClient의 로고만 가져올 수 있다.
   nxClientLogoPath(key: string) {
     let path: string;
     if (key === undefined || key === "") {
       path = `${this.root}/assets/icons/default.png`;
-    }
-    else {
+    } else {
       let abs_key = key;
       if (abs_key.indexOf("/api/v1/files/") === -1) {
         abs_key = "/api/v1/files/" + abs_key;
@@ -834,12 +872,12 @@ export class DataService {
     return path;
   }
 
-
   eventIndex() {
     const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
-    return this.gateway.callLocalStorage(readWriteID) === undefined ? 0 : parseInt(this.gateway.callLocalStorage(readWriteID));
+    return this.gateway.callLocalStorage(readWriteID) === undefined
+      ? 0
+      : parseInt(this.gateway.callLocalStorage(readWriteID));
   }
-
 
   saveEventIndex(signpost: Signpost) {
     const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
@@ -852,12 +890,18 @@ export class DataService {
         this.gateway.saveLocalstorage(readWriteID, 0);
       } else {
         let idx = parseInt(this.gateway.callLocalStorage(readWriteID));
-        let layerCount = (signpost.layers.length === 0 || signpost.layers.length === 1) ? -999 : signpost.layers.length - 1;
+        let layerCount =
+          signpost.layers.length === 0 || signpost.layers.length === 1
+            ? -999
+            : signpost.layers.length - 1;
         if (layerCount === -999) {
           this.gateway.saveLocalstorage(readWriteID, 0);
         } else {
           if (layerCount / ((idx + 1) * 3) <= 1) {
-            console.log("Check layerCount / ((idx + 1) * 3) : ", layerCount / ((idx + 1) * 3));
+            console.log(
+              "Check layerCount / ((idx + 1) * 3) : ",
+              layerCount / ((idx + 1) * 3)
+            );
             console.log("idx : ", this.gateway.callLocalStorage(readWriteID));
             this.gateway.saveLocalstorage(readWriteID, 0);
           } else {
@@ -868,12 +912,10 @@ export class DataService {
     }
   }
 
-
   saveInitEventIndex() {
     const readWriteID: string = `${EVENT_INDEX}_${this.readID}`;
     this.gateway.saveLocalstorage(readWriteID, 0);
   }
-
 
   // 서버로부터 받은 데이터가 비었는지 체크
   isEmptyObject(obj) {
@@ -907,7 +949,6 @@ export class DataService {
     return false;
   }
 
-
   // 이름을 적절한 타입으로 수정한다.
   convertDestName = (name: string) => {
     const convert: any = JSON.parse(JSON.stringify(convertJSON));
@@ -915,8 +956,7 @@ export class DataService {
       return convert[name];
     }
     return "";
-  }
-
+  };
 
   // 정렬 시작
   sortMultipleType = (type: string) => {
@@ -952,13 +992,10 @@ export class DataService {
         return (
           a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
             numeric: true,
-          })
-          ||
-          a.layers[0].direction - b.layers[0].direction
+          }) || a.layers[0].direction - b.layers[0].direction
         );
       });
-    }
-    else {
+    } else {
       _signposts = _signposts.sort((a: Signpost, b: Signpost): number => {
         const res: number = a.layers[0].destName.localeCompare(
           b.layers[0].destName,
@@ -986,5 +1023,5 @@ export class DataService {
     for (let i = 0; i < this.signpostPacks.length; i++) {
       this.signpostPacks[i].signpost = allSignposts[i];
     }
-  }
+  };
 }
