@@ -370,6 +370,9 @@ export class AppComponent implements OnInit {
     } else {
       this.deviceRatio = "horizon";
     }
+
+    const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
+    this.data.startPuzzleData(readID);
   }
 
   nextLogoOpen = true; // animation
