@@ -272,10 +272,10 @@ export class AppComponent implements OnInit {
   // 화면 InitView
   ngOnInit() {
     // ratio의 width 비율이 1 미만일 경우
-    if (window.innerWidth / window.innerHeight < 1) {
-      this.deviceRatio = "vertical";
-    } else {
+    if (window.innerWidth / window.innerHeight > 1) {
       this.deviceRatio = "horizon";
+    } else {
+      this.deviceRatio = "vertical";
     }
 
     this.deviceLog = new Device();
@@ -310,6 +310,24 @@ export class AppComponent implements OnInit {
     this.deviceLog.zoneId =
       this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
     this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 60af589449a3cd9c5cde4c91;
+
+    /**
+     * [S40]
+     * East : 6009494bf42a7813e5253afc
+     * North : 5fbb80b220557e0aacbb0fc3 
+     * South: 5fbb8ab220557e0aacbb26ca
+     * West : 5fbb8e38f42a7813e5687c1f
+     * 
+     * [S41]
+     * East : 5fbb9543f42a7813e5688cdc
+     * North : 5fbb91d4f42a7813e568848e
+     * South : 5fbb98c920557e0aacbb4870
+     * West : 5fbb9c47f42a7813e5689dc4
+     */
+    const fixVertical: string[] = ["6009494bf42a7813e5253afc", "5fbb80b220557e0aacbb0fc3", "5fbb8ab220557e0aacbb26ca", "5fbb8e38f42a7813e5687c1f", "5fbb9543f42a7813e5688cdc", "5fbb91d4f42a7813e568848e", "5fbb98c920557e0aacbb4870", "5fbb9c47f42a7813e5689dc4"];
+    if (fixVertical.includes(this.deviceLog.screenId)) {
+      this.deviceRatio = "vertical";
+    }
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway
@@ -365,10 +383,28 @@ export class AppComponent implements OnInit {
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     let divide = event.target.innerWidth / event.target.innerHeight;
-    if (divide < 1) {
-      this.deviceRatio = "vertical";
-    } else {
+    if (divide > 1) {
       this.deviceRatio = "horizon";
+    } else {
+      this.deviceRatio = "vertical";
+    }
+    
+    /**
+     * [S40]
+     * East : 6009494bf42a7813e5253afc
+     * North : 5fbb80b220557e0aacbb0fc3 
+     * South: 5fbb8ab220557e0aacbb26ca
+     * West : 5fbb8e38f42a7813e5687c1f
+     * 
+     * [S41]
+     * East : 5fbb9543f42a7813e5688cdc
+     * North : 5fbb91d4f42a7813e568848e
+     * South : 5fbb98c920557e0aacbb4870
+     * West : 5fbb9c47f42a7813e5689dc4
+     */
+    const fixVertical: string[] = ["6009494bf42a7813e5253afc", "5fbb80b220557e0aacbb0fc3", "5fbb8ab220557e0aacbb26ca", "5fbb8e38f42a7813e5687c1f", "5fbb9543f42a7813e5688cdc", "5fbb91d4f42a7813e568848e", "5fbb98c920557e0aacbb4870", "5fbb9c47f42a7813e5689dc4"];
+    if (fixVertical.includes(this.deviceLog.screenId)) {
+      this.deviceRatio = "vertical";
     }
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
