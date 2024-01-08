@@ -311,24 +311,6 @@ export class AppComponent implements OnInit {
       this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
     this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 60af589449a3cd9c5cde4c91;
 
-    /**
-     * [S40]
-     * East : 6009494bf42a7813e5253afc
-     * North : 5fbb80b220557e0aacbb0fc3 
-     * South: 5fbb8ab220557e0aacbb26ca
-     * West : 5fbb8e38f42a7813e5687c1f
-     * 
-     * [S41]
-     * East : 5fbb9543f42a7813e5688cdc
-     * North : 5fbb91d4f42a7813e568848e
-     * South : 5fbb98c920557e0aacbb4870
-     * West : 5fbb9c47f42a7813e5689dc4
-     */
-    const fixVertical: string[] = ["6009494bf42a7813e5253afc", "5fbb80b220557e0aacbb0fc3", "5fbb8ab220557e0aacbb26ca", "5fbb8e38f42a7813e5687c1f", "5fbb9543f42a7813e5688cdc", "5fbb91d4f42a7813e568848e", "5fbb98c920557e0aacbb4870", "5fbb9c47f42a7813e5689dc4"];
-    if (fixVertical.includes(this.deviceLog.screenId)) {
-      this.deviceRatio = "vertical";
-    }
-
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway
       .getAwait(LOCAL_WAS)
@@ -354,6 +336,7 @@ export class AppComponent implements OnInit {
             }
           );
         }
+        this.setAspectRatio();
       })
       .catch((e) => {
         console.log("load awate Local WAS error : ", e);
@@ -376,40 +359,40 @@ export class AppComponent implements OnInit {
             }
           );
         }
+        this.setAspectRatio();
       });
   }
 
   // 리사이즈 시스템 Callback
   @HostListener("window:resize", ["$event"])
   onResize(event) {
-    let divide = event.target.innerWidth / event.target.innerHeight;
-    if (divide > 1) {
-      this.deviceRatio = "horizon";
-    } else {
-      this.deviceRatio = "vertical";
-    }
-    
-    /**
-     * [S40]
-     * East : 6009494bf42a7813e5253afc
-     * North : 5fbb80b220557e0aacbb0fc3 
-     * South: 5fbb8ab220557e0aacbb26ca
-     * West : 5fbb8e38f42a7813e5687c1f
-     * 
-     * [S41]
-     * East : 5fbb9543f42a7813e5688cdc
-     * North : 5fbb91d4f42a7813e568848e
-     * South : 5fbb98c920557e0aacbb4870
-     * West : 5fbb9c47f42a7813e5689dc4
-     */
-    const fixVertical: string[] = ["6009494bf42a7813e5253afc", "5fbb80b220557e0aacbb0fc3", "5fbb8ab220557e0aacbb26ca", "5fbb8e38f42a7813e5687c1f", "5fbb9543f42a7813e5688cdc", "5fbb91d4f42a7813e568848e", "5fbb98c920557e0aacbb4870", "5fbb9c47f42a7813e5689dc4"];
-    if (fixVertical.includes(this.deviceLog.screenId)) {
-      this.deviceRatio = "vertical";
-    }
-
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.data.startPuzzleData(readID);
+    this.setAspectRatio();
   }
+
+  /**
+   * 현재 비율에 맞게 deviceRatio 값을 설정한다.
+   */
+  setAspectRatio = () => {
+    const firstSignpost = this.data.firstSignpost();
+    if (firstSignpost == undefined || firstSignpost.ratio == undefined) {
+      console.log("now ratio : Empty Data");
+      const divide = window.innerWidth / window.innerHeight;
+      if (divide < 1) {
+        this.deviceRatio = "vertical";
+      } else {
+        this.deviceRatio = "horizon";
+      }
+    } else {
+      console.log("now ratio : ", firstSignpost.ratio);
+      if (firstSignpost.ratio == "8:9") {
+        this.deviceRatio = "vertical";
+      } else {
+        this.deviceRatio = "horizon";
+      }
+    }
+  };
 
   nextLogoOpen = true; // animation
   nextLayerOpen = true; // animation
@@ -1202,6 +1185,8 @@ export class AppComponent implements OnInit {
   }
 
   // 로고 경로 추출
+
+  // get Logo path
   logoPath(image: string) {
     if (image.match("./assets/icons/default.png")) {
       return image;

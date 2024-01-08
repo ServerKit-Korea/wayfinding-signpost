@@ -33,7 +33,6 @@ class SignpostPack {
     } else if (this.signpost.layers.length <= this.layersIndex) {
       return undefined;
     }
-    console.log("now Indexer : ", this.layersIndex);
     return this.signpost.layers[this.layersIndex++];
   }
 
@@ -111,6 +110,17 @@ export class DataService {
       console.log("Server Connection and Data Puzzle");
       this.creation(data);
     }
+  }
+
+  // 첫번째 signpost 넘기기 (get ratio용.)
+  // 만약 인터넷 연결도 안 되어 순수한 빈 signpost도 올 수 있으니 signpost.ratio == undefined 역시 체크해야 한다.
+  firstSignpost(): Signpost {
+    if (this.signpostPacks == undefined || this.signpostPacks.length == 0) {
+      return undefined;
+    }
+
+    console.log("this.signpostPacks[0]: ", this.signpostPacks[0]);
+    return this.signpostPacks[0].signpost;
   }
 
   // 다음 signpost 계산하여 넘기기
@@ -846,6 +856,8 @@ export class DataService {
 
   // nxClient에서 로고의 패스를 긁어온다.
   // 이 방법으로는 local의 samsungSDS/NxClient의 로고만 가져올 수 있다.
+
+  // Get the path of the logo from nxClient.
   nxClientLogoPath(key: string) {
     let path: string;
     if (key === undefined || key === "") {
@@ -853,7 +865,7 @@ export class DataService {
     } else {
       let abs_key = key;
       if (abs_key.indexOf("/api/v1/files/") === -1) {
-        abs_key = "/api/v1/files/" + abs_key;
+        abs_key = "/api/v1/files/" + abs_key; // ex) "/api/v1/files/{fairId}"
       }
       try {
         path = this.logoKeyValue.get(abs_key);
@@ -864,7 +876,7 @@ export class DataService {
         path = "__NO_DATA__";
       }
 
-      // (추가) 만약 NO_DATA일 경우 WF 서버로 즉시 이동시킨다.
+      // Call WF API (Logo get API)
       if (path == "__NO_DATA__") {
         path = `${this.gateway.serverIP}/logo?logoId=${key}`;
       }

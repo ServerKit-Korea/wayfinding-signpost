@@ -1,4 +1,4 @@
-export const __IS_DEBUG__: boolean = false;  // DEBUG 용
+export const __IS_DEBUG__: boolean = false; // DEBUG 용
 export const Logger = (log, param?) => {
   if (!__IS_DEBUG__) {
     return;
@@ -25,7 +25,7 @@ export enum ArrowMask {
   LEFT_DOWNFLOOR = 256,
   RIGHT_DOWNFLOOR = 512,
   LEFT_U_TURN = 1024,
-  RIGHT_U_TURN = 2048
+  RIGHT_U_TURN = 2048,
 }
 
 export class Signpost {
@@ -34,6 +34,7 @@ export class Signpost {
   color: string; // 색
   arrowMask: number; // 방향 자동 가리기
   layers: Layer[];
+  ratio: string; // 현재 디바이스의 ratio 상태 (16:9, 8:9만 지원)
 
   constructor(signpost: Signpost) {
     this.layers = [];
@@ -43,8 +44,9 @@ export class Signpost {
       this.title = signpost.title;
       this.color = signpost.color;
       this.arrowMask = signpost.arrowMask;
+      this.ratio = signpost.ratio;
 
-      signpost.layers.forEach(layer => {
+      signpost.layers.forEach((layer) => {
         let l: Layer = new Layer(layer);
         this.layers.push(Object.assign(l));
       });
@@ -80,7 +82,7 @@ export class Layer {
       if (layer.langDesc == undefined || layer.langDesc.length <= 0) {
         this.langDesc.push(new LanguageDesc());
       } else {
-        layer.langDesc.forEach(desc => {
+        layer.langDesc.forEach((desc) => {
           let d: LanguageDesc = new LanguageDesc(desc);
           this.langDesc.push(d);
         });
