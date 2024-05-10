@@ -298,7 +298,7 @@ export class AppComponent implements OnInit {
     } catch {
       console.log("paramater null");
     }
-
+    
     this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
     // this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
     // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:4000";
@@ -864,7 +864,7 @@ export class AppComponent implements OnInit {
       const t: "Fair-Overview" | "Section-Overview" = this.signpost.type as
         | "Fair-Overview"
         | "Section-Overview";
-      this.overviewSignposts = this.data.overviewSignpost(t);
+      this.overviewSignposts = this.data.overviewSignpost(t, this.deviceRatio);
       this.signpost = Object.assign(this.overviewSignposts[0]);
       this.overviewSignposts = this.overviewSignposts.slice(1);
 
@@ -894,7 +894,7 @@ export class AppComponent implements OnInit {
           }
           const r: number = this.overviewSignposts.length < 4 ? 2 : 1;
           this.overviewSignposts = this.overviewSignposts.concat(
-            this.data.overviewSignpost(t, r).slice(1)
+            this.data.overviewSignpost(t, this.deviceRatio, r).slice(1)
           );
         }
       }

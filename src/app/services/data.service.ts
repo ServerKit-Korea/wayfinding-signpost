@@ -67,7 +67,7 @@ export class DataService {
   public textColor: string = "#ffffff";
   public pictoColor: string = "#ffffff";
 
-  readonly OVERVIEW_VERTICAL_ASPECTRATIO: number = 0.89;
+  // readonly OVERVIEW_VERTICAL_ASPECTRATIO: number = 0.89;
 
   constructor(private gateway: GatewayService, private event: EventService) {}
 
@@ -292,6 +292,7 @@ export class DataService {
    */
   public overviewSignpost(
     type: "Fair-Overview" | "Section-Overview",
+    ratio: string,
     r: number = 3
   ): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
@@ -306,7 +307,7 @@ export class DataService {
     let fair_overview_backupSignpost: Signpost[] = [];
 
     // 현재 signpost의 비율
-    const aspectRatio: number = window.innerWidth / window.innerHeight;
+    // const aspectRatio: number = window.innerWidth / window.innerHeight;
 
     // Overview의 초기 인덱스를 구하기
     for (const s of this.signpostPacks) {
@@ -402,7 +403,8 @@ export class DataService {
     // [Fair-Overview일 경우 조금 특별한 작업을 시작한다.]
     if (type == "Fair-Overview") {
       // 만약 비율이 8:9가 아닐 경우 특수 처리를 진행한다.
-      if (aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO) {
+      // if (aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO) {
+      if (ratio != "vertical") {
         fair_overview_special = true;
         fair_overview_backupSignpost = _.cloneDeep(signposts);
 
@@ -549,7 +551,8 @@ export class DataService {
           if (
             !(
               type == "Section-Overview" &&
-              aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO
+              ratio != "vertical"
+              // aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO
             )
           ) {
             if (
