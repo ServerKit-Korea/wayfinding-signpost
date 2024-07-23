@@ -309,7 +309,7 @@ export class AppComponent implements OnInit {
       this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : ""; // 2925
     this.deviceLog.zoneId =
       this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
-    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 60af589449a3cd9c5cde4c91;
+    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 1245;
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway
@@ -320,6 +320,7 @@ export class AppComponent implements OnInit {
 
         if (__IS_DEBUG__) {
           this.data.startPuzzleData(readID, 1);
+          this.setAspectRatio();
         } else {
           // 최초 서버와 통신.
           // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
@@ -327,22 +328,24 @@ export class AppComponent implements OnInit {
             (data) => {
               console.log("SUCCESS Server Connection: ", data);
               this.data.startPuzzleData(readID, data._body);
+              this.setAspectRatio();
             },
             (error) => {
               // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
               console.log(error);
               // this.data.startPuzzleData(readID, 2);
               this.data.startPuzzleData(readID, "Failed Connect");
+              this.setAspectRatio();
             }
           );
         }
-        this.setAspectRatio();
       })
       .catch((e) => {
         console.log("load awate Local WAS error : ", e);
 
         if (__IS_DEBUG__) {
           this.data.startPuzzleData(readID, 1);
+          this.setAspectRatio();
         } else {
           // 최초 서버와 통신.
           // 1. 이 로직에서 서버와 통신이 원활하지 않을 경우 local JSON Data를 로드.
@@ -350,26 +353,27 @@ export class AppComponent implements OnInit {
             (data) => {
               console.log("SUCCESS Server Connection : ", data);
               this.data.startPuzzleData(readID, data._body);
+              this.setAspectRatio();
             },
             (error) => {
               // 서버가 연결 안되면 로컬 스토리지의 데이터를 불러온다.
               console.log(error);
               // this.data.startPuzzleData(readID, 2);
               this.data.startPuzzleData("Failed Connect");
+              this.setAspectRatio();
             }
           );
         }
-        this.setAspectRatio();
       });
   }
 
   // 리사이즈 시스템 Callback
-  @HostListener("window:resize", ["$event"])
-  onResize(event) {
-    const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
-    this.data.startPuzzleData(readID);
-    this.setAspectRatio();
-  }
+  // @HostListener("window:resize", ["$event"])
+  // onResize(event) {
+  //   const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
+  //   this.data.startPuzzleData(readID);
+  //   this.setAspectRatio();
+  // }
 
   /**
    * 현재 비율에 맞게 deviceRatio 값을 설정한다.

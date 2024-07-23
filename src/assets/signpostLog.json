@@ -1,70 +1,95 @@
 [
   {
-    "type": "Section-Multiple",
-    "title": "garden bbq A",
-    "color": "#F10909",
-    "arrowMask": "111111011111",
-    "layers": [
-        {
-            "destName": "HALL_7",
-            "context": "garden bbq A",
-            "langDesc": "",
-            "logos": [
-                ""
-            ],
-            "imgs": [
-                "Ladies.Men",
-                "Toilet.for.handicapped.persons",
-                "BIS_grau"
-            ],
-            "direction": 2
-        }
-    ]
+      "type": "Section-Overview",
+      "title": "polisMOBILITY 2024",
+      "color": "#96C126",
+      "arrowMask": "111111011111",
+      "ratio": "8:9",
+      "layers": [
+          {
+              "isEdited": false,
+              "destName": "HALL_5-2",
+              "langDesc": "",
+              "logos": [
+                  "6578064d20557e528f3cbb17"
+              ],
+              "imgs": [
+                  "Toilets",
+                  "Disabled Toilet",
+                  "Snack Point"
+              ],
+              "direction": 1,
+              "originalDirection": null
+          }
+      ]
   },
-  
   {
-    "type": "Section-Multiple",
-    "title": "garden bbq B",
-    "color": "#F10909",
-    "arrowMask": "111111011111",
-    "layers": [
-        {
-            "destName": "HALL_8",
-            "context": "garden bbq B",
-            "langDesc": "",
-            "logos": [
-                ""
-            ],
-            "imgs": [
-                "Ladies.Men",
-                "Toilet.for.handicapped.persons",
-                "BIS_grau"
-            ],
-            "direction": 2
-        }
-    ]
+      "type": "Section-Overview",
+      "title": "polisMOBILITY 2024",
+      "color": "#96C126",
+      "arrowMask": "111111011111",
+      "ratio": "8:9",
+      "layers": [
+          {
+              "isEdited": false,
+              "destName": "EINGANG_EAST-1",
+              "langDesc": "",
+              "logos": [
+                  "6578064d20557e528f3cbb17"
+              ],
+              "imgs": [
+                  "Toilets",
+                  "Disabled Toilet",
+                  "Snack Point"
+              ],
+              "direction": 2
+          }
+      ]
   },
-  
   {
-    "type": "Section-Multiple",
-    "title": "garden bbq C",
-    "color": "#F10909",
-    "arrowMask": "111111011111",
-    "layers": [
-        {
-            "destName": "HALL_9",
-            "context": "garden bbq C",
-            "langDesc": "",
-            "logos": [
-                ""
-            ],
-            "imgs": [
-                "Ladies.Men",
-                "Toilet.for.handicapped.persons",
-                "BIS_grau"
-            ],
-            "direction": 2
-        }
-    ]
+      "type": "Section-Overview",
+      "title": "polisMOBILITY 2024",
+      "color": "#96C126",
+      "arrowMask": "111111011111",
+      "ratio": "8:9",
+      "layers": [
+          {
+              "isEdited": false,
+              "destName": "PASSAGE_10-11-EAST",
+              "langDesc": "",
+              "logos": [
+                  "6578064d20557e528f3cbb17"
+              ],
+              "imgs": [
+                  "Toilets",
+                  "Disabled Toilet",
+                  "Snack Point"
+              ],
+              "direction": 4
+          }
+      ]
+  },
+  {
+      "type": "Section-Overview",
+      "title": "polisMOBILITY 2024",
+      "color": "#96C126",
+      "arrowMask": "111111011111",
+      "ratio": "8:9",
+      "layers": [
+          {
+              "isEdited": false,
+              "destName": "PASSAGE_10-11-WEST",
+              "langDesc": "",
+              "logos": [
+                  "6578064d20557e528f3cbb17"
+              ],
+              "imgs": [
+                  "Toilets",
+                  "Disabled Toilet",
+                  "Snack Point"
+              ],
+              "direction": 2
+          }
+      ]
   }
 ]
