@@ -290,91 +290,45 @@ export class DataService {
   /**
    * 해당 타입의 Overview를 전부 불러온다.
    */
-  public overviewSignpost(
-    type: "Fair-Overview" | "Section-Overview",
-    ratio: string,
-    r: number = 3
-  ): Signpost[] {
+  public overviewSignpost(type: "Fair-Overview" | "Section-Overview", ratio: string, r: number = 3): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
-    let allSignposts: Signpost[] = [];
-    let signposts: Signpost[] = [];
+    const allSignposts: Signpost[] = this.signpostPacks.map(s => s.signpost);
+    let signposts: Signpost[] = allSignposts.filter(s => s.type === type);
     let returnSignpost: Signpost[] = [];
-    let initIndex: number = 0;
     let lastIndex: number = 0;
 
     let fair_overview_special: boolean = false;
     let fair_overview_backupSignpost: Signpost[] = [];
 
-    // 현재 signpost의 비율
-    // const aspectRatio: number = window.innerWidth / window.innerHeight;
-
     // Overview의 초기 인덱스를 구하기
-    for (const s of this.signpostPacks) {
-      if (s.signpost.type == type) {
-        break;
-      }
-      initIndex++;
-    }
+    const initIndex = allSignposts.findIndex(s => s.type === type);
+    console.log("initIndex : ", initIndex);
 
     if (this.signpostPacks.length <= this.signpostIndex) {
       this.signpostIndex = 0;
     }
 
-    // Overview의 해당 타입만 구하기
-    for (const s of this.signpostPacks) {
-      allSignposts.push(s.signpost);
-      if (s.signpost.type == type) {
-        signposts.push(s.signpost);
-      }
-    }
-
-    /**
+    /** 
      * 정렬 개시
      * 정렬 순서는 다음과 같다.
      *
      * (16:9 Only) 섹션 이름 1순위 오름차순
      * 홀번호, 화살표 우선순위로 오름차순
+     * 
+     * ※ 0번 배열은 타이틀 처기 때문에 정렬 대상에서 제외하고 정렬 이후에 0번 위치에 그대로 넣는다.
      */
-    let sortSignposts: Signpost[] = [];
-    sortSignposts.push(signposts[0]);
+    const sortedSignposts = [signposts[0]];
     signposts = signposts.slice(1);
 
-    // 정렬순은 (오름차순) 홀 destname과 direction으로 갈린다.
-    if (type == "Fair-Overview") {
-      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
-        return (
-          a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, {
-            numeric: true,
-          }) || a.layers[0].direction - b.layers[0].direction
-        );
-      });
-    } else {
-      signposts = signposts.sort((a: Signpost, b: Signpost): number => {
-        const res: number = a.layers[0].destName.localeCompare(
-          b.layers[0].destName,
-          undefined,
-          {
-            numeric: true,
-          }
-        );
-        if (res === 0) {
-          return a.title.localeCompare(b.title, undefined, {
-            numeric: true,
-          });
-        } else {
-          return res;
-        }
-      });
-    }
-    sortSignposts = sortSignposts.concat(signposts);
-    signposts = _.cloneDeep(sortSignposts);
-
-    // 정렬 완료 된 친구들을 원래 친구에 삽입한다.
-    let cnt: number = 1;
-    for (let i = initIndex + 1; i < initIndex + signposts.length; i++) {
-      allSignposts[i] = signposts[cnt++];
-    }
+    signposts.sort((a, b) => {
+      const destNameCompare = a.layers[0].destName.localeCompare(b.layers[0].destName, undefined, { numeric: true });
+      if (destNameCompare !== 0) return destNameCompare;
+      if (type === "Fair-Overview") return a.layers[0].direction - b.layers[0].direction;
+      return a.title.localeCompare(b.title, undefined, { numeric: true });
+    });
+    signposts = sortedSignposts.concat(signposts);
+    signposts = _.cloneDeep(signposts);
 
     // 추가로 signposts의 0번은 이름을 특정 이름으로 고정한다(고객사 요청)
     signposts[0].title = "Hallen Halls";
@@ -395,108 +349,75 @@ export class DataService {
       this.textColor = this.pictoColor = "#383838";
     }
 
-    // console.log(" > 가공 전, 그러니까 해당 Overview의 전체 signpost : ", signposts);
-
     // 일단 초기값으로 overview의 0번 레이어를 넣어 주고 0번을 삭제한다. (0번은 그냥 상단 장식용 데이터기 때문)
     returnSignpost.push(signposts[0]);
 
-    // [Fair-Overview일 경우 조금 특별한 작업을 시작한다.]
-    if (type == "Fair-Overview") {
-      // 만약 비율이 8:9가 아닐 경우 특수 처리를 진행한다.
-      // if (aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO) {
-      if (ratio != "vertical") {
-        fair_overview_special = true;
-        fair_overview_backupSignpost = _.cloneDeep(signposts);
+    console.log(` > 가공 전, 해당 '${type}' type Overview의 전체 signpost : `, signposts);
 
-        const firstSignpost: Signpost[] = [];
+    // type이 Fair-Overview이며 vertical(8:9)이 아닐경우 조금 특별한 작업을 시작한다.
+    if (type == "Fair-Overview" && ratio != "vertical") {
+      fair_overview_special = true;
+      fair_overview_backupSignpost = _.cloneDeep(signposts);
 
-        // 0번 레이어 외에 모두 집어 넣는다.
-        const nextSignposts: Signpost[] = signposts.slice(1);
+      // 0번 레이어 외에 모두 집어 넣는다.
+      const nextSignposts: Signpost[] = signposts.slice(1);
+      const firstSignpost: Signpost[] = [];
 
-        // 방향별로 같은 친구를 묶는다.
-        let map: Map<number, Signpost[]> = new Map();
-        for (const s of nextSignposts) {
-          let m: Signpost[] = map.get(s.layers[0].direction);
-          if (!m) {
-            m = [];
-          }
-          m.push(s);
-          map.set(s.layers[0].direction, m);
-        }
-
-        // 묶은 대상을 바탕으로 Signpost를 재조립한다.
-        // 같은 방향당 최대 3개며 이를 넘기면 새로운 Signpost로 조립한다.
-        const maxDirection: number = 3;
-        for (const key of map.keys()) {
-          let combineSignpost: Signpost[] = map.get(key);
-          if (combineSignpost.length > maxDirection) {
-            const ceil: number =
-              combineSignpost.length % maxDirection != 0 ? 1 : 0;
-            const div: number =
-              Math.floor(combineSignpost.length / maxDirection) + ceil;
-            // console.log("ceil : ", ceil);
-            // console.log("Math.floor(combineSignpost.length / maxDirection) : ", Math.floor(combineSignpost.length / maxDirection));
-            // console.log("div : ", div);
-
-            for (let i = 0; i < div; i++) {
-              let newSignpost: Signpost = new Signpost(undefined);
-              newSignpost.type = type;
-
-              let layer = new Layer();
-              layer.direction = key;
-
-              let destname: string = "";
-              const count: number = i * maxDirection;
-              for (let n = count; n < count + maxDirection; n++) {
-                if (combineSignpost[n] == undefined) {
-                  break;
-                }
-
-                if (destname == "") {
-                  destname = combineSignpost[n].layers[0].destName;
-                } else {
-                  destname +=
-                    "\u00A0\u00A0\u00A0" +
-                    combineSignpost[n].layers[0].destName;
-                }
-              }
-              layer.destName = destname;
-              newSignpost.layers.push(layer);
-              firstSignpost.push(newSignpost);
-            }
-          } else {
-            let newSignpost: Signpost = new Signpost(undefined);
-            newSignpost.type = type;
-
-            let layer = new Layer();
-            layer.direction = key;
-
-            let destname: string = "";
-            for (const combine of combineSignpost) {
-              if (destname == "") {
-                destname = combine.layers[0].destName;
-              } else {
-                destname += "\u00A0\u00A0\u00A0" + combine.layers[0].destName;
-              }
-            }
-            layer.destName = destname;
-            newSignpost.layers.push(layer);
-            firstSignpost.push(newSignpost);
-          }
-        }
-        signposts = firstSignpost;
-        console.log(" > overview signposts : ", signposts);
+      // 방향별로 같은 친구를 묶는다.
+      const map: Map<number, Signpost[]> = new Map();
+      for (const s of nextSignposts) {
+        const m: Signpost[] = map.get(s.layers[0].direction) ? map.get(s.layers[0].direction) : [];
+        m.push(s);
+        map.set(s.layers[0].direction, m);
       }
+
+      // 묶은 대상을 바탕으로 Signpost를 재조립한다.
+      // 같은 방향당 최대 3개며 이를 넘기면 새로운 Signpost로 조립한다.
+      //  └ 단 이건 어디까지나 destName이 존재할 때 한정한다. 만약 destName이 없는 경우 이 제한은 무시한다.
+      const maxDirection: number = 3;
+      map.forEach((combineSignpost, key) => {
+        let size: number = combineSignpost.length;
+
+        // 하위의 destName의 텍스트가 없는 경우(HALL 관련된 숫자 텍스트가 아닌 EINGANG 등으로 예외처리 된 빈 문자열값)
+        for (const s of combineSignpost) {
+          if (s.layers[0].destName == "") {
+            size--;
+          }
+        }
+        if (size <= 0) {
+          size = 1;
+        }
+
+        const div = Math.ceil(size / maxDirection);
+        for (let i = 0; i < div; i++) {
+          const newSignpost = new Signpost(undefined);
+          newSignpost.type = type;
+    
+          const layer = new Layer();
+          layer.direction = key;
+    
+          const destname = combineSignpost.slice(i * maxDirection, (i + 1) * maxDirection)
+            .map(s => s.layers[0].destName)
+            .join("\u00A0\u00A0\u00A0");
+    
+          layer.destName = destname;
+          newSignpost.layers.push(layer);
+          firstSignpost.push(newSignpost);
+        }
+      });
+
+      signposts = firstSignpost;
+      console.log(" > overview signposts : ", signposts);
     }
     lastIndex = initIndex + signposts.length;
-
-    const overviewSize: number = signposts.length; // overview 템플릿의 최대 개수
-    const maxLayerSize: number = r * 3; // 최대 출력할 개수
 
     // console.log(" > 현재 인덱스 : ", this.signpostIndex);
     // console.log(" > overview 초기 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 첫번째 : ", initIndex);
     // console.log(" > overview 마지막 인덱스, 그러니까 전체 영역의 인덱스 중 Overview의 마지막 : ", lastIndex);
+    // const overviewSize: number = signposts.length; // overview 템플릿의 최대 개수
     // console.log(" > overview의 총 Size : ", overviewSize);
+
+    const maxLayerSize: number = r * 3; // 최대 출력할 개수
 
     // 최대 반복은 9개지만 초기에는 더미 데이터인 0번을 포함하므로 10개로 설정한다.
     let repeat: number = lastIndex - this.signpostIndex;
@@ -518,60 +439,44 @@ export class DataService {
     // 여기서부터 턴이 갈리는데 하필이면 fair-overview가 이상한 조건 달고 나와서..
     if (fair_overview_special) {
       for (let i = 0; i < repeat; i++) {
-        if (signposts[i] == undefined) {
+        const signpost = signposts[i];
+        if (!signpost) {
           break;
         }
-
+    
         // 이놈의 경우 가공 데이터이므로 상관 없다.
-        if (
-          signposts[i].layers[0].destName == undefined ||
-          signposts[i].layers[0].destName == ""
-        ) {
+        if (signpost.layers[0].destName == undefined) {
           repeat++;
           continue;
         }
-
-        if (signposts[i]) {
-          returnSignpost.push(signposts[i]);
-        }
+        
+        console.log("allSignposts[nowIndex]: ", signpost);
+        returnSignpost.push(signpost);
       }
       this.signpostIndex += fair_overview_backupSignpost.length - 1;
       this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
-    } else {
+    } 
+    else {
       for (let i = 0; i < repeat; i++) {
         const nowIndex: number = i + start;
-        if (allSignposts[nowIndex] == undefined) {
+        const signpost: Signpost = allSignposts[nowIndex];
+        if (!signpost) {
           break;
         }
-
+    
         // 초기 0번 개체만 아니면 추가한다.
-        if (initIndex != nowIndex) {
+        if (initIndex !== nowIndex) {
           // 만약 destname이 비어 있다면 생략한다.
-          // 아래 조건은 16:9 비율의 Section-Overview 타입 외에 destName이름이 ""로 들어오는 값을 넘긴다는 뜻.
-          if (
-            !(
-              type == "Section-Overview" &&
-              ratio != "vertical"
-              // aspectRatio >= this.OVERVIEW_VERTICAL_ASPECTRATIO
-            )
-          ) {
-            if (
-              allSignposts[nowIndex].layers[0].destName == undefined ||
-              allSignposts[nowIndex].layers[0].destName == ""
-            ) {
-              repeat++;
-              continue;
-            }
+          if (type !== "Section-Overview" && ratio === "horizon" && signpost.layers[0].destName == undefined) {
+            repeat++;
+            continue;
           }
-
-          // 여기는 주의해야 하는게 전체 인덱스 범위를 기준으로 잡았으니 당연히 전체 사인포스트를 기준으로 가져와야 한다.
-          if (allSignposts[nowIndex]) {
-            returnSignpost.push(allSignposts[nowIndex]);
-          }
+    
+          returnSignpost.push(signpost);
         }
       }
       this.signpostIndex += repeat - 1;
-
+    
       if (this.signpostIndex >= lastIndex) {
         this.gateway.saveLocalstorage(readWriteID, this.signpostIndex);
       } else {
@@ -838,8 +743,7 @@ export class DataService {
       } catch {
         // 배열이 아닌 경우 아래 로직으로 체크
         let dest: string = signpost.layers[0].destName;
-        if (dest === null || dest === undefined) {
-        } else {
+        if (dest != null && dest != undefined) {
           dest = this.convertDestName(dest);
         }
         signpost.layers[0].destName = dest;

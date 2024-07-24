@@ -1,0 +1,222 @@
+[
+    {
+        "type": "Fair-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "",
+        "layers": [
+            {
+                "destName": "Overview_Layer",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fair-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "arrowMask": "111111011111",
+        "ratio": "8:9",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_EAST-1",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    },
+    {
+        "type": "Fair-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "arrowMask": "111111011111",
+        "ratio": "8:9",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_NORTH-1",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 4
+            }
+        ]
+    },
+    {
+        "type": "Fair-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "arrowMask": "111111011111",
+        "ratio": "8:9",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_SOUTH-1.5",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    },
+    {
+        "type": "Fair-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "arrowMask": "111111011111",
+        "ratio": "8:9",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_WEST-1",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    },
+    {
+        "type": "Section-Overview",
+        "title": "gamescom 2024",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "",
+        "layers": [
+            {
+                "destName": "Overview_Layer",
+                "langDesc": "",
+                "logos": [
+                    "62cbfad120557e261aabdcb9"
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Section-Overview",
+        "title": "Exit South",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "111111011111",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_SOUTH-1.5",
+                "context": "Exit South",
+                "langDesc": "",
+                "logos": [
+                    ""
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    },
+    {
+        "type": "Section-Overview",
+        "title": "Exit North",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "111111011111",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_NORTH-1",
+                "context": "Exit North",
+                "langDesc": "",
+                "logos": [
+                    ""
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 4
+            }
+        ]
+    },
+    {
+        "type": "Section-Overview",
+        "title": "Exit East",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "111111011111",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_EAST-1",
+                "context": "Exit East",
+                "langDesc": "",
+                "logos": [
+                    ""
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    },
+    {
+        "type": "Section-Overview",
+        "title": "Exit West",
+        "color": "#7800FF",
+        "ratio": "8:9",
+        "arrowMask": "111111011111",
+        "layers": [
+            {
+                "isEdited": false,
+                "destName": "EINGANG_WEST-1",
+                "context": "Exit West",
+                "langDesc": "",
+                "logos": [
+                    ""
+                ],
+                "imgs": [
+                    "Toilets",
+                    "Disabled Toilet",
+                    "Snack Point"
+                ],
+                "direction": 2
+            }
+        ]
+    }
+]

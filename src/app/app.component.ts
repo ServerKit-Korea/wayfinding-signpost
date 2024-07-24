@@ -298,18 +298,17 @@ export class AppComponent implements OnInit {
     } catch {
       console.log("paramater null");
     }
-    
     this.deviceLog.ip = this.gateway.serverIP = "https://ds-wf.koelnmesse.net";
     // this.deviceLog.ip = this.gateway.serverIP = "https://wf-te-eu.samsungnexshop.com";
     // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:4000";
     // this.deviceLog.ip = this.gateway.serverIP = "http://61.73.79.136:3000";
     this.deviceLog.screenId =
-      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5f55db00e2db595ec0bc2eda
+      this.deviceLog.screenId != "" ? this.deviceLog.screenId : "5b6b9262f42a784e76f488a7"; // 5f55db00e2db595ec0bc2eda
     this.deviceLog.matrixId =
-      this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : ""; // 2925
+      this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : "11047"; // 2925
     this.deviceLog.zoneId =
-      this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
-    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 1245;
+      this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : "17956"; // 5354
+    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : "1238"; // 1245;
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway
@@ -755,16 +754,8 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    // -- kinds: normal, 일반 fair, section, event
-    if (
-      [
-        "Fair",
-        "Fair-Closest",
-        "Section",
-        "Section-Closest",
-        "Event-List",
-      ].includes(this.signpost.type)
-    ) {
+    // -- kinds: 일반 fair, section
+    if (["Fair", "Fair-Closest", "Section", "Section-Closest"].includes(this.signpost.type)) {
       let logoTime = 1;
 
       // 로고의 개수를 구한다.
@@ -808,9 +799,7 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds: Multiple Type
-    else if (
-      ["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)
-    ) {
+    else if (["Fair-Multiple", "Section-Multiple"].includes(this.signpost.type)) {
       // 색버그 수정
       if (
         this.signpost.color === undefined ||
@@ -858,17 +847,15 @@ export class AppComponent implements OnInit {
     }
 
     // -- kinds : Overview Type
-    else if (
-      ["Fair-Overview", "Section-Overview"].includes(this.signpost.type)
-    ) {
+    else if (["Fair-Overview", "Section-Overview"].includes(this.signpost.type)) {
       // 모든 Overview 객체를 다 불러온다.
       this.index = 0;
       this.overviewIndex = 0;
 
-      const t: "Fair-Overview" | "Section-Overview" = this.signpost.type as
-        | "Fair-Overview"
-        | "Section-Overview";
+      const t: "Fair-Overview" | "Section-Overview" = this.signpost.type as "Fair-Overview" | "Section-Overview";
       this.overviewSignposts = this.data.overviewSignpost(t, this.deviceRatio);
+
+      // header를 제외한다.
       this.signpost = Object.assign(this.overviewSignposts[0]);
       this.overviewSignposts = this.overviewSignposts.slice(1);
 
@@ -983,10 +970,7 @@ export class AppComponent implements OnInit {
             return;
           }
 
-          if (
-            this.signpost.type == "Section-Overview" &&
-            this.deviceRatio == "horizon"
-          ) {
+          if (this.signpost.type == "Section-Overview" && this.deviceRatio == "horizon") {
             // 다음 오픈할지 계산
             let length: number = this.overviewIndex + 3;
             let layerIndex: number = 0;
@@ -1048,7 +1032,10 @@ export class AppComponent implements OnInit {
       }
       this.nextLayerOpen = true;
       this.cd.detectChanges();
-    } else {
+    } 
+    
+    // -- kinds : Events
+    else {
       let cnt = 0; // 루프되는 횟수
       this.index = 0; // 돌아가고 있는 현재 횟수
 
