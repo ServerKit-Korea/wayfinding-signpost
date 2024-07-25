@@ -303,12 +303,12 @@ export class AppComponent implements OnInit {
     // this.deviceLog.ip = this.gateway.serverIP = "http://192.168.0.29:4000";
     // this.deviceLog.ip = this.gateway.serverIP = "http://61.73.79.136:3000";
     this.deviceLog.screenId =
-      this.deviceLog.screenId != "" ? this.deviceLog.screenId : "5b6b9262f42a784e76f488a7"; // 5f55db00e2db595ec0bc2eda
+      this.deviceLog.screenId != "" ? this.deviceLog.screenId : ""; // 5f55db00e2db595ec0bc2eda
     this.deviceLog.matrixId =
-      this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : "11047"; // 2925
+      this.deviceLog.matrixId != "" ? this.deviceLog.matrixId : ""; // 2925
     this.deviceLog.zoneId =
-      this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : "17956"; // 5354
-    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : "1238"; // 1245;
+      this.deviceLog.zoneId != "" ? this.deviceLog.zoneId : ""; // 5354
+    this.deviceLog.fair = this.deviceLog.fair != "" ? this.deviceLog.fair : ""; // 1245;
 
     const readID: string = `${this.deviceLog.screenId}_${this.deviceLog.matrixId}_${this.deviceLog.zoneId}`;
     this.gateway
@@ -764,8 +764,8 @@ export class AppComponent implements OnInit {
           this.signpost.layers[0].logos.length > 1
             ? this.maxRollingTime / 2
             : this.signpost.layers[0].logos.length === 1
-            ? this.maxRollingTime
-            : -1;
+              ? this.maxRollingTime
+              : -1;
       } catch {
         logoTime = -1;
       }
@@ -834,11 +834,6 @@ export class AppComponent implements OnInit {
         this.logoURL = this.signpost.layers[0].logos[this.logo_count];
       }
 
-      console.log(
-        "sectionMultipleSignpostArray : ",
-        this.sectionMultipleSignpostArray.length
-      );
-
       // if(this.sectionMultipleSignpostArray.length <= 0)
 
       // false => true, opacity: 0 > 1
@@ -902,8 +897,8 @@ export class AppComponent implements OnInit {
           this.signpost.layers[0].logos.length > 1
             ? this.maxRollingTime / 2
             : this.signpost.layers[0].logos.length == 1
-            ? this.maxRollingTime
-            : -1;
+              ? this.maxRollingTime
+              : -1;
       } catch {
         logoTime = -1;
       }
@@ -1032,8 +1027,8 @@ export class AppComponent implements OnInit {
       }
       this.nextLayerOpen = true;
       this.cd.detectChanges();
-    } 
-    
+    }
+
     // -- kinds : Events
     else {
       let cnt = 0; // 루프되는 횟수
@@ -1210,15 +1205,12 @@ export class AppComponent implements OnInit {
   defaultTemplatePath(type: "169" | "89") {
     if (this.isRendering) {
       if (this.deviceLog.fair && this.deviceLog.fair != "") {
-        return `${this.gateway.serverIP}/static/${
-          this.deviceLog.fair
-        }/signpost/${type == "169" ? "169.png" : "89.png"}?p=${
-          this.cacheReboot
-        }`;
+        return `${this.gateway.serverIP}/static/${this.deviceLog.fair
+          }/signpost/${type == "169" ? "169.png" : "89.png"}?p=${this.cacheReboot
+          }`;
       } else {
-        return `${this.gateway.serverIP}/static/signpost/${
-          type == "169" ? "169.png" : "89.png"
-        } | safe: 'url'`;
+        return `${this.gateway.serverIP}/static/signpost/${type == "169" ? "169.png" : "89.png"
+          } | safe: 'url'`;
         // return `${(type == "169") ? "./assets/default/169.png" : "./assets/default/89.png"}`;
       }
     }
@@ -1246,7 +1238,7 @@ export class AppComponent implements OnInit {
 
     try {
       clearTimeout(this.imgLoadCheckTimer);
-    } catch (e) {}
+    } catch (e) { }
     this.cd.detectChanges();
   }
 

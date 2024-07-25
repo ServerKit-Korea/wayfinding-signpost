@@ -69,7 +69,7 @@ export class DataService {
 
   // readonly OVERVIEW_VERTICAL_ASPECTRATIO: number = 0.89;
 
-  constructor(private gateway: GatewayService, private event: EventService) {}
+  constructor(private gateway: GatewayService, private event: EventService) { }
 
   // Desc: AppComponent가 Hide가 된 순간 받았던 데이터를 퍼즐화 시킨다.
   startPuzzleData(readID: string, data?: any) {
@@ -211,16 +211,12 @@ export class DataService {
    *   2. Signpost 길이가 0개면 빈 배열을 반환, 그 이외는 최대 3개를 반환한다.
    * @param length 반환할 Signpost 개수
    */
-  public previewSignpost(
-    length: number = 1,
-    type: string = "default"
-  ): Signpost[] {
+  public previewSignpost(length: number = 1, type: string = "default"): Signpost[] {
     const readWriteID: string = `${SIGNPOST_INDEX}_${this.readID}`;
 
     // type이 Fair-Multiple 이거나 Section-Multiple일 경우
     if (type == "Fair-Multiple" || type == "Section-Multiple") {
       const lens: number = length >= 2 ? 2 : length <= 0 ? 1 : length;
-      console.log("lens : ", lens);
 
       let signposts: Signpost[] = [];
       let nowSignpostIndex = this.signpostIndex;
@@ -392,14 +388,14 @@ export class DataService {
         for (let i = 0; i < div; i++) {
           const newSignpost = new Signpost(undefined);
           newSignpost.type = type;
-    
+
           const layer = new Layer();
           layer.direction = key;
-    
+
           const destname = combineSignpost.slice(i * maxDirection, (i + 1) * maxDirection)
             .map(s => s.layers[0].destName)
             .join("\u00A0\u00A0\u00A0");
-    
+
           layer.destName = destname;
           newSignpost.layers.push(layer);
           firstSignpost.push(newSignpost);
@@ -443,27 +439,25 @@ export class DataService {
         if (!signpost) {
           break;
         }
-    
+
         // 이놈의 경우 가공 데이터이므로 상관 없다.
         if (signpost.layers[0].destName == undefined) {
           repeat++;
           continue;
         }
-        
-        console.log("allSignposts[nowIndex]: ", signpost);
         returnSignpost.push(signpost);
       }
       this.signpostIndex += fair_overview_backupSignpost.length - 1;
       this.gateway.saveLocalstorage(readWriteID, this.signpostIndex + 1);
-    } 
+    }
     else {
       for (let i = 0; i < repeat; i++) {
         const nowIndex: number = i + start;
         const signpost: Signpost = allSignposts[nowIndex];
-        if (!signpost) {
+        if (!signpost || signpost.type != type) {
           break;
         }
-    
+
         // 초기 0번 개체만 아니면 추가한다.
         if (initIndex !== nowIndex) {
           // 만약 destname이 비어 있다면 생략한다.
@@ -471,12 +465,10 @@ export class DataService {
             repeat++;
             continue;
           }
-    
           returnSignpost.push(signpost);
         }
       }
       this.signpostIndex += repeat - 1;
-    
       if (this.signpostIndex >= lastIndex) {
         this.gateway.saveLocalstorage(readWriteID, this.signpostIndex);
       } else {
@@ -528,7 +520,7 @@ export class DataService {
       for (let i = 1; i <= 3; i++) {
         let layer: Layer =
           this.pack().signpost.layers[
-            i + eventIdx * 3 === 0 ? 1 : i + eventIdx * 3
+          i + eventIdx * 3 === 0 ? 1 : i + eventIdx * 3
           ];
         console.log(
           "(i + (eventIdx * 3)) === 0 ? 1 : i + (eventIdx * 3) : ",
@@ -856,7 +848,6 @@ export class DataService {
         }
       }
     } else {
-      console.log("No Array");
       const value = JSON.parse(JSON.stringify(obj));
       if (JSON.stringify(obj) === "{}") {
         return true;
